@@ -1,1 +1,1 @@
-## Network-analysis course @University of Amsterdam 2022
+## Network analysis course @University of Amsterdam 2022
