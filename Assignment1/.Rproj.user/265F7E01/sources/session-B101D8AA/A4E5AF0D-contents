@@ -1,0 +1,197 @@
+library(pcalg)
+library(Rgraphviz)
+
+suffStat = list(C =cor(datafile), n = nrow(datafile))
+skel <- skeleton(suffStat, indepTest = gaussCItest, alpha = 0.01, labels = colnames(datafile)[2:4])
+pcfit <- pc(suffStat, indepTest = gaussCItest, alpha = 0.05, labels = colnames(datafile))
+
+plot(pcfit)
+
+dev.off()
+cpdag_mat <- as(pcfit,"graphNEL")
+
+plot(cpdag_mat)
+
+# Each row is a DAG adjacency matrix in vector form (by rows)
+res1 <- pdag2allDags(cpdag_mat)
+
+plot(res1[[1]])
+
+# We can get the adjacency matrix of an individual DAG using
+res1_dags <- list()
+for(i in 1:nrow(res1$dags)){
+  res1_dags[[i]] <- t(matrix(res1$dags[i,],4,4,byrow = TRUE))
+}
+# Notice we have to transpose the adjacency matrix here for qgraph!
+
+par(mfrow = c(1,1))
+
+# We can plot each of these just as we did above
+for(i in 1:3){
+  qgraph(res1_dags[[i]], labels = colnames(datafile)[4:6], directed = TRUE, asize = 8, vsize = 15)
+}
+
+
+
+
+
+
+# Remember that the null hypothesis for each test is that the two variables are independent.
+# Use an alpha of .05 for each test.
+
+# Test Marginal Independence using
+martest1 <- cor.test(data[,"X1"], data[,"X2"])
+martest1$p.value
+
+# Test Conditional Independence using
+#library(ppcor)
+ctest1 <- pcor.test(data[,"X1"], data[,"X2"], data[,"X3"])
+ctest1$p.value
+alpha <- .05
+
+# we can automate the correlation tests a bit like so:
+
+
+## marginal
+variables <- colnames(datafile)
+marginal_string <- t(combn(variables,2))
+colnames(marginal_string) <- c("DV1", "DV2")
+
+condition_vars <- list()
+for (i in 1:nrow(marginal_string)) {
+condition_vars[[i]] <- variables[!variables %in% marginal_string[i,]]
+}
+
+as.matrix(rep(marginal_string[1,],4), 4, 2)
+rbind(rep(marginal_string[1,],4) , condition_var[[1]])
+var <- variables[!variables %in% marginal_string[1,]]
+var[1]
+
+## condition on 1 var
+cond1_string <- matrix("NA",60,3)
+cond1_string[seq(1,60,4),c(1,2)] <- cond1_string[seq(2,61,4),c(1,2)]<- cond1_string[seq(3,62,4),c(1,2)] <- cond1_string[seq(4,63,4),c(1,2)]  <- marginal_string[, c(1,2)]
+sequence <- seq(1,60,4)
+for (i in 1:nrow(marginal_string)) {
+  condition_var <- variables[!variables %in% marginal_string[i,]]
+    cond1_string[sequence[i],3] <- condition_var[1]
+    cond1_string[sequence[i]+1,3] <- condition_var[2]
+    cond1_string[sequence[i]+2,3] <- condition_var[3]
+    cond1_string[sequence[i]+3,3] <- condition_var[4]
+}
+
+## condition on 2 vars
+cond2_string <- matrix("NA",90,4)
+for(i in 1:6){
+  cond2_string[seq(i,90+ (i-1), 6), c(1,2)] <- marginal_string[, c(1,2)]
+}
+sequence <- seq(1,90,6)
+for (i in 1:nrow(marginal_string)) {
+  condition_var <- variables[!variables %in% marginal_string[i,]]
+  cv_mat <- t(combn(condition_var, 2))
+    cond2_string[sequence[i], c(3,4)] <- cv_mat[1,]
+    cond2_string[sequence[i]+1,c(3,4)] <- cv_mat[2,]
+    cond2_string[sequence[i]+2,c(3,4)] <- cv_mat[3,]
+    cond2_string[sequence[i]+3,c(3,4)] <- cv_mat[4,]
+    cond2_string[sequence[i]+4,c(3,4)] <- cv_mat[5,]
+    cond2_string[sequence[i]+5,c(3,4)] <- cv_mat[6,]
+}
+
+## condition on 3 vars
+cond3_string <- matrix("NA",60,5)
+for(i in 1:4){
+  cond3_string[seq(i,60+(i-1), 4), c(1,2)] <- marginal_string[, c(1,2)]
+}
+sequence <- seq(1,60,4)
+for (i in 1:nrow(marginal_string)) {
+  condition_var <- variables[!variables %in% marginal_string[i,]]
+  cv_mat <- t(combn(condition_var, 3))
+    cond3_string[sequence[i], c(3,4,5)] <- cv_mat[1,]
+    cond3_string[sequence[i]+1,c(3,4,5)] <- cv_mat[2,]
+    cond3_string[sequence[i]+2,c(3,4,5)] <- cv_mat[3,]
+    cond3_string[sequence[i]+3,c(3,4,5)] <- cv_mat[4,]
+}
+
+## condition on 4 vars
+cond4_string <- matrix("NA",15,6)
+cond4_string[, c(1,2)] <- marginal_string[, c(1,2)]
+
+for (i in 1:nrow(marginal_string)) {
+  condition_var <- variables[!variables %in% marginal_string[i,]]
+  cv_mat <- t(combn(condition_var, 4))
+  cond4_string[i, c(3,4,5,6)] <- cv_mat[1,]
+}
+
+
+# First let's test those marginal correlations
+marg_p <- apply(marginal_string,1,function(r){
+  cor.test(datafile[,r[1]], datafile[,r[2]])$p.value
+})
+marginal_string[which(marg_p>0.05),]
+
+library(ppcor)# for pcor.test
+# Now test the first set of conditional dependencies
+c1_p <- apply(cond1_string,1,function(r){
+  pcor.test(datafile[,r[1]], datafile[,r[2]], datafile[,r[3]])$p.value
+})
+cond1_string[which(c1_p>0.05),]
+
+# Now test the secod set of conditional dependencies
+c2_p <- apply(cond2_string,1,function(r){
+  pcor.test(datafile[,r[1]], datafile[,r[2]], datafile[,r[c(3,4)]])$p.value
+})
+cond2_string[which(c2_p>0.05),]
+
+
+# Now test the third set of conditional dependencies
+c3_p <- apply(cond3_string,1,function(r){
+  pcor.test(datafile[,r[1]], datafile[,r[2]], datafile[,r[c(3,4,5)]])$p.value
+})
+
+cond3_string[which(c3_p>0.05),]
+
+
+# Now test the fourth set of conditional dependencies
+c4_p <- apply(cond4_string,1,function(r){
+  pcor.test(datafile[,r[1]], datafile[,r[2]], datafile[,r[c(3,4,5,6)]])$p.value
+})
+
+cond4_string[which(c4_p>0.05),]
+
+
+alpha = 0.05
+#Here are the results formatted in a table :
+marg <- cbind(marginal_string,ifelse(marg_p < alpha, "Dependent", "Independent"))
+c1 <- cbind(cond1_string,ifelse(c1_p < alpha, "Dependent", "Independent"))
+c2 <- cbind(cond2_string,ifelse(c2_p < alpha, "Dependent", "Independent"))
+marg; c1 ; c2
+
+
+
+# Remove the edges between X2 - X3 and X1- x4
+adj_full <- matrix(1,6,6)
+diag(adj_full) <- 0
+
+qgraph(adj_full, labels = variables)
+
+adj <- adj_full
+adj[1,3] <- adj[3,1] <- 0
+adj[1,4] <- adj[4,1] <- 0
+adj[2,3] <- adj[3,2] <- 0
+adj[2,6] <- adj[6,2] <- 0
+adj[1,6] <- adj[6,1] <- 0
+adj[1,5] <- adj[5,1] <- 0
+adj[2,5] <- adj[5,2] <- 0
+adj[3,5] <- adj[5,3] <- 0
+adj[3,6] <- adj[6,3] <- 0
+adj[5,6] <- adj[6,5] <- 0
+
+par(mfrow=c(1,2))
+qgraph(adj_full, labels = variables)
+qgraph(adj, labels = variables)
+
+# make the layout custom (optional)
+layout = matrix(c(0,1,-1,0,1,0,0,-1),4,2,byrow = T)
+
+par(mfrow=c(1,2))
+qgraph(adj_full, labels = names, layout = layout, directed = FALSE, title = "Full Undirected Graph", title.cex = 1.25, vsize = 15)
+qgraph(adj, labels = names, layout = layout, directed = FALSE, title = "Estimated Skeleton", title.cex = 1.25, vsize = 15)

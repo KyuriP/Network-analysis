@@ -1,0 +1,205 @@
+---
+title: "Question 7"
+author: "Joyce Pang"
+date: "2022-11-10"
+output: html_document
+---
+## Question 7
+
+```{r}
+datafile <- read.table(file='http://borsboomdenny.googlepages.com/datafile.txt')
+
+attach(datafile)
+source('http://borsboomdenny.googlepages.com/program.txt')
+# look at the datafile - should contain 5000 cases for six variables # (genes, fingers, smoke, try, susceptible, cancer)
+View(datafile)
+# Compute the correlation between the variables genes and smoke - 0.1277
+cor(genes,smoke)
+
+```
+
+### Question 7.1 (point)
+Consider the three variables \texttt{fingers}, \texttt{cancer} and \texttt{smoke}.
+
+```{r}
+#question A
+ind(fingers,cancer)
+#question B
+cind(var1= smoke, var2 = cancer, blocker = fingers)
+#question C
+cind(var1 = fingers, var2= cancer, blocker = smoke)
+#question D
+cind(var1 = smoke, var2 = fingers, blocker = cancer)
+#question E: additional checks
+ind(fingers, smoke)
+ind(smoke, cancer)
+
+
+
+
+
+```
+
+\begin{enumerate}{
+  \item[A)] \textit{No. Fingers and cancer are not independent}
+  \item[B)] \textit{No. Smoke and cancer are not conditionally independent given fingers.}
+  \item[C)] \textit{Yes. Fingers and cancer are conditionally independent given smoke.}
+  \item[D)] \textit{No. Smoke and fingers are not conditionally independent given cancer.}
+  \item[E)] \textit{Because fingers and cancer are conditionally independent given smoke, 
+  I then check whether smoke is marginally dependent with fingers and whether it is 
+  also marginally dependent with cancer.Results showed that fingers is marginally 
+  dependent with smoke and that cancer is marginally dependent with smoke as well. 
+  This is consistent with statement number C because smoke is either a confound for the 
+  relationship between fingers and cancer or that finger is a mediator between smoke and cancer.}
+}
+\end{enumerate}
+
+### Question 7.2 (1 point)
+Consider the three variables \texttt{smoke}, \texttt{try} and \texttt{susceptible}.
+
+```{r}
+#question A
+ind(susceptible,try)
+#question B
+cind(var1= susceptible, var2= try, blocker = smoke)
+#question C:additional checks
+ind(smoke, susceptible)
+ind(try, smoke)
+
+```
+
+\begin{enumerate}{
+  \item[A)] \textit{Yes. Susceptible and try are independent}
+  \item[B)] \textit{Yes. Susceptible and try are not conditionally independent given smoke.}
+  \item[C)] \textit{Because susceptible and try are not conditionally independent 
+  given smoke but susceptible and try are independent, so it suggests that smoke 
+  is a common effect of susceptible and try. So I checked whether susceptible is correlated with 
+  smoke and whether try is correlated with smoke. Results confirmed my guess as 
+  susceptible is marginally dependent with smoke and try is marginally dependent with smoke.}
+}
+\end{enumerate}
+
+### Question 7.3 (1 point)
+Consider the three variables \texttt{try}, \texttt{smoke} and \texttt{cancer}.
+
+```{r}
+#question A
+ind(try, cancer)
+#question B
+cind(var1 = try, var2 = cancer, blocker = smoke)
+#question C: additional checks
+ind(smoke, cancer)
+ind(smoke, try)
+```
+
+\begin{enumerate}{
+  \item[A)] \textit{No. Try and cancer are not independent.}
+  \item[B)] \textit{Yes. Try and cancer are conditionally independent given smoke.}
+  \item[C)] \textit{Because try and cancer are marginally dependent but they became conditionally independent given smoke. 
+  This means that smoke is either a confound in the relationship between try and cancer or that smoke mediates 
+  the relationship between try and cancer. I then check if smoke and cancer are marginally dependent and 
+  I found that smoke and cancer are marginally dependent. Similarly, try and cancer are also 
+  marginally dependent.The two findings fit with the statement B.}
+}
+\end{enumerate}
+
+### Question 7.4 (1 point)
+Consider the three variables \texttt{genes}, \texttt{susceptible} and \texttt{smoke}.
+
+```{r}
+#question A
+ind(smoke, genes)
+#question B
+cind(var1 = smoke, var2 = susceptible, blocker = genes)
+#question C
+cind(var1 = genes, var2 = smoke, blocker = susceptible)
+#question D: additional checks
+ind(smoke, susceptible)
+ind(smoke, genes)
+ind(smoke, susceptible)
+ind(genes, susceptible)
+```
+
+\begin{enumerate}{
+  \item[A)] \textit{No, Smoke and genes are not independent.}
+  \item[B)] \textit{No. Smoke and susceptible are not conditionally independent given genes.}
+  \item[C)] \textit{Yes. Genes and smoke are conditinoally independent given susceptible}
+  \item[D)] \textit{Because genes and smoke are not marginally independent but became conditionally independent given susceptible, 
+  it suggests that susceptible either mediates the effect between genes and smoke or that it confounds the relationship 
+  between smoke and genes. I then check whether susceptible is marginally dependent with genes 
+  and smoke separately. I found that susceptible is marginally dependent with genes and smoke separately.
+  So, it suggests that susceptible is either a confound between smoke and genes or that it mediates 
+  the effect of genes and smoke. Then, because smoke and susceptible are not conditionally independent given genes, I will check whether 
+  smoke and susceptible are marginally independent. If the answer is yes, it suggests that genes is a common effect of smoke and susceptible.
+  I found that smoke and susceptible are not marginally independent so genes is not a common effect of smoke and susceptible. }
+}
+\end{enumerate}
+
+### Question 7.5 (1 point)
+Do any additional checks you want on the full dataset.Then draw your best guess of the DAG that created the data. Indicate the evidence you have for your DAG, as well as the evidence that speaks against it (if you have any). Also indicate for which parts of your DAG you have no conclusive evidence and explain why.
+
+\textit{Remember that the data are simulated from the DAG, and therefore we have sampling errors: not all implied (in)dependencies in the generating DAG are necessarily detectable in this particular sample. Also, sometimes you may use sensibble theory to fix some arrows, but be sure to mention it. In general: use your brain as well as the statistics.} 
+
+```{r}
+require("ggdag")
+require("ggplot2")
+library(ggdag)
+our_dag <- ggdag::dagify(smoke ~ susceptible,
+                         smoke ~ try,
+                         cancer ~ smoke,
+                         finger ~ smoke,
+                         susceptible ~ genes) %>% 
+                         tidy_dagitty() %>% 
+                         dag_label(labels= c("smoke" = "smoke",
+                                             "susceptible" = "susceptible", 
+                                             "try" = "try", 
+                                             "cancer" = "cancer",
+                                             "finger" = "finger", 
+                                             "genes" = "genes"))
+p <- ggdag::ggdag(our_dag, node_size = 20, text_size = 2.5)+theme_dag()
+
+p$layers[[3]]$mapping <- 
+  ggplot2::aes(colour = c("unconclusive", "conclusive")[as.numeric(name == "try"| name == "susceptible") + 1])
+p + ggplot2::scale_color_manual(values = c("#cc2055", "black")) 
+```
+
+\textit{As colour-coded in the graph, the only conclusive part in the DAG is that 
+smoke is a common effect of try and susceptible. This is because susceptible is 
+marginally independent of try but they became conditionally dependent given smoke, 
+which is an unambiguous evidence that smoke is a common effect of try and susceptible. 
+However, other relationships remain ambiguous (e.g., smoke as the common cause of 
+finger and cancer, susceptible mediates the effect of genes and smoke, and smoke 
+mediates the effect of try and cancer). A test of marginal (in)dependence and 
+conditional (in)dependence cannot test whether they are a collider (common cause)
+or that they are a chain path (mediator) as they are statistically equivalent. 
+For instance, I argue that smoke is a common cause of finger and cancer but finger 
+can also act as a mediator that explains the effect of smoke on cancer as they 
+produce the same statistical result (i.e., fingers are marginally dependent on 
+cancer but became conditionally independent given smoke). However, I chose to 
+argue the model as it is given some theoretical background in the research on 
+smoking. First, I argue that smoke (i.e., being a smoker or not) is a common 
+cause of finger (i.e., whether a person has yellow stained finger) and cancer 
+(i.e., whether a person has cancer) instead of arguing finger explains the effect 
+of smoke on cancer. This is because the poisons in cigarette smoke reduces the 
+chances of killing cancer cells (Centres for disease control and prevention) 
+instead of the fact that smokers have yellow-stained fingers. Yellow-stained
+fingers is a result of smoking because of the chemicals on cigarettes. Therefore, 
+smoke is a common cause of finger and cancer. Secondly, I argue that smoke 
+mediates the effect of try (i.e., how often a person has tried cigarette in 
+his/her adolescence) on cancer. Research has found that more cigarettes you 
+smoked during adolescence is related to whether or not a person grows up being 
+a smoker (Hu et al., 2020). Thus, it is suspected that smoke mediates the effect of 
+try and cancer. The other possibility in which smoke is a common cause of try and 
+cancer is less likely because it is impossible for one’s smoker status to influence 
+how the person has had cigarettes in his/her adolescence. Finally, I argue that 
+susceptible (i.e., whether the person is susceptible to smoking addiction) mediates
+the effect of genes (i.e., whether a person has good or bad genes) on smoke. 
+Research has found that certain genes in individual do increase the susceptibility
+to smoking addiction and smoking addiction does increase the chance of being 
+diagnosed with cancer (Agrawal et al., 2008). On the other hand, the possibility 
+that susceptible is a common cause of gene and smoke is less likely. Because 
+one’s susceptibility to smoking addiction cannot cause a person having good or 
+bad genes as genes are something innate. So, the possibility in which susceptible 
+mediates the effect of genes on smoke is more likely. 
+References: 
+}

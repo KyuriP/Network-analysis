@@ -1,0 +1,49 @@
+knitr::opts_chunk$set(echo = TRUE,
+warning = FALSE,
+message = FALSE,
+comment = NA)
+library(qgraph)
+library(ppcor)
+library(dplyr)
+library(pander)
+# set the seed
+set.seed(123)
+twit <- read.csv("data/edges.csv") %>%
+# remove missing rows.
+# these can cause some issues when turning an
+# edgelist into a social network graph
+na.omit() %>%
+# create subsample (my arbitrary choice: 100,000)
+sample_n(1e3) %>%
+# Next, make sure the node_id and alter_id variables
+# are character variables.
+mutate_if(is.numeric, as.character)
+# get clusters
+twitter_communities <- igraph::cluster_walktrap(twitter_igraph)
+# get clusters
+twitter_igraph <-
+# Take our qgraph network
+twitter_net %>%
+# turn it into an igraph object with
+# as.igraph
+igraph::as.igraph()
+# get clusters
+twitter_igraph <-
+# Take our qgraph network
+twit %>%
+# turn it into an igraph object with
+# as.igraph
+igraph::as.igraph()
+# get clusters
+twitter_igraph <-  igraph::as.igraph(twit)
+# get clusters
+twitter_igraph <-  as.igraph(twit)
+?as.igraph
+# get clusters
+twitter_igraph <-  igraph::as.igraph(twit)
+graph(twit)
+qgraph(twit)
+qgraph(consult, layout="spring", threshold=0.5)
+consult <- read.table("Consulting.txt")
+qgraph(consult, layout="spring", threshold=0.5)
+dolphin <- Matrix::readMM('dolphins/soc_dolphin.mtx')

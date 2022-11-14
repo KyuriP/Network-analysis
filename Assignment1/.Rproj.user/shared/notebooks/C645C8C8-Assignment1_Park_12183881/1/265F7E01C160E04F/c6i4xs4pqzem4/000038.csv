@@ -1,0 +1,4 @@
+"0","dolphin <- Matrix::readMM('dolphins/soc_dolphin.mtx')
+"
+"2","Error in open.connection(file) : cannot open the connection
+"

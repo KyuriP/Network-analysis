@@ -1,0 +1,182 @@
+## ---------------------------------------- Supplementary material ----------------------------------------
+## Article: Comorbid obsessive-compulsive disorder and depression: A Bayesian network approach.
+
+## ---- required packages
+## Rgraphviz is on BioConductor, the remaining packages on CRAN
+## source("http://bioconductor.org/biocLite.R")
+## biocLite("Rgraphviz")   
+
+require("qgraph")         ## network plots and graphical LASSO
+require("bootnet")
+require("bnlearn")        ## Bayesian network package
+require("corrplot")       ## correlation matrix plots
+require("Rgraphviz")   ## used for visualizing Bayesian networks
+
+library(tidyr)  # for pivot_longer
+library(dplyr)
+## ------------------------ data import and data manipulation -------------------------------
+dat <- read.csv("ocd_dep.csv")   ## import data
+glimpse(dat)
+
+# check data structure
+dat %>% 
+  pivot_longer(where(is.numeric)) %>% 
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 10) +
+  facet_wrap(~name) + 
+  theme_minimal()
+
+# not normal --> makes the data semiparametric Gaussian
+library(huge)
+transformed_dat <- as.data.frame(huge.npn(dat))
+class(transformed_dat)
+
+# check the transformed data again
+transformed_dat %>% 
+  pivot_longer(where(is.numeric)) %>% 
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 10) +
+  facet_wrap(~name) + 
+  theme_minimal()
+
+
+## ----- quick correlation structure check
+# they are almost same
+all.equal(round(cor(dat), 2), round(cor(transformed_dat), 2))
+
+cormat <- cor(transformed_dat)
+
+## ---------------------------------- Part I: graphical LASSO -----------------------------
+candidate_gammas <- list(0.4, 0.5, 0.6, 0.7)
+
+layout(t(1:4))
+list(0.4, 0.5, 0.6, 0.7) %>% 
+  purrr::map(~ EBICglasso(cormat, n = nrow(transformed_dat), gamma = .x) %>% 
+               qgraph(., layout = "spring",theme= "colorblind", vsize = 5) 
+             )
+
+glasso_gamma0.6 <- EBICglasso(cormat, n = nrow(transformed_dat), gamma = 0.4)
+glasso_gamma0.6 <- EBICglasso(cormat, n = nrow(transformed_dat), gamma = 0.5)
+glasso_gamma0.6 <- EBICglasso(cormat, n = nrow(transformed_dat), gamma = 0.6)
+glasso_gamma0.6 <- EBICglasso(cormat, n = nrow(transformed_dat), gamma = 0.7)
+
+glassoNet <- qgraph(glasso_gamma0.6, layout = "spring", groups = list(Depression = 1:16, OCD = 17:26), 
+                    color = c("white", "gray"), label.scale = TRUE, labels = colnames(transformed_dat), theme= "colorblind", vsize = 5)
+
+
+
+# Compute graph with tuning = 0 (BIC):
+BICgraph <- EBICglasso(cormat, nrow(transformed_dat), 0, threshold = TRUE)
+
+# Compute graph with tuning = 0.5 (EBIC)
+EBICgraph <- EBICglasso(cormat, nrow(transformed_dat), 0.5, threshold = TRUE)
+
+# Plot both:
+layout(t(1:2))
+BICgraph <- qgraph(BICgraph, layout = "spring", title = "BIC", details = TRUE)
+EBICgraph <- qgraph(EBICgraph, layout = "spring", title = "EBIC")
+
+
+
+cmeasures <- centrality(glassoNet)     ## compute centrality measures
+cDF <- data.frame(degree = cmeasures$OutDegree, closeness = cmeasures$Closeness, betweenness = 
+                    cmeasures$Betweenness)
+round(cDF, 4)   ## data frame containing centrality measures
+
+centralityPlot(glassoNet)         ## z-standardization
+
+## ------ boostrap graphical LASSO network
+glassoFit2 <- estimateNetwork(netdata, default = "EBICglasso", prepFun = "cor")  ## re-estimate network
+
+## --- edge weight accuracy
+set.seed(123)
+glassoBoot1 <- bootnet(glassoFit2, nBoots = 1000, nCores = 4)  ## this takes about 1 min
+summary(glassoBoot1)
+
+plot(glassoBoot1, labels = TRUE, order = "sample")  ## plot edge differences (y-axis)
+## The red line indicates the sample values and the gray area the bootstrapped CIs. 
+## Each horizontal line represents one edge of the network, ordered from 
+## the edge with the highest edge-weight to the edge with the lowest edge-weight.
+## We see which edge weights differ significantly from each other.
+
+plot(glassoBoot1, labels = FALSE, order = "sample")  ## without edge names
+
+## Bootstrapped difference tests between edge-weights that were non-zero
+## In the estimated network (first plot) and node strength of the symptoms (second plot):
+plot(glassoBoot1, "edge", plot = "difference", onlyNonZero = TRUE, order = "sample")
+plot(glassoBoot1, "strength")
+## Gray boxes indicate nodes or edges that do not differ significantly from one another and
+## black boxes represent nodes or edges that do differ significantly from one another. 
+## Note: white boxes in the second plot show the value of node strength.
+
+
+## --- centrality stability
+set.seed(123)
+glassoBoot2 <- bootnet(glassoFit2, nBoots = 1000, type = "person", nCores = 4)
+plot(glassoBoot2)
+## Average correlations between centrality indices of networks sampled with persons
+## dropped and the original sample. Lines indicate the means and areas indicate the range
+## from the 2.5th quantile to the 97.5th quantile
+
+
+## ---------------------------------- Part II: Bayesian network ---------------------------------
+## Fit a first Bayesian network, based on 50 random re-starts and 100 perturbations for each re-start. 
+set.seed(123)
+fitBN1 <- hc(netdata, restart = 50, perturb = 100)  ## hc gives directed graph
+fitBN1
+
+bnlearn::score(fitBN1, data = netdata)          ## global network score
+astr <- arc.strength(fitBN1, netdata, "bic-g")  ## connection strength
+astr[order(astr[,3]), ]  ## sorted edge strength from strongest to weakest
+
+strength.plot(fitBN1, astr, shape = "ellipse")
+
+## Now we stabilize the network across multiple samples through bootstrapping:
+## Learn 1000 network structures (takes ~5 min, we keep the number of restarts and perturbations considerably low)
+set.seed(123)
+bootnet <- boot.strength(netdata, R = 1000, algorithm = "hc", algorithm.args = list(restart = 5, perturb = 10), debug = TRUE)  
+head(bootnet)
+## strength: connection strength, e.g. 0.86 means that this connection appears in 86% of the fitted networks.
+## direction: probability of the direction, e.g. 0.57 means that in 57% of the fitted networks the connection goes in 
+## the direction depicted in the graph.
+
+## filter the ones with a strength larger than 0.85 and a direction probability > 0.5
+bootnet[bootnet$strength > 0.85 & bootnet$direction > 0.5, ]
+
+## net1: build the average network using a 0.85 threshold (Sachs et al., 2005, Science)
+avgnet1 <- averaged.network(bootnet, threshold = 0.85)
+avgnet1
+bnlearn::score(avgnet1, data = netdata)
+astr1 <- arc.strength(avgnet1, netdata, "bic-g")   ## compute edge strengths
+
+strength.plot(avgnet1, astr1, shape = "ellipse")
+
+## net2: use the optimal cutpoint according to Scurati & Nagarajan (2013) Artificial Intelligence in Medicine
+avgnet2 <- averaged.network(bootnet)
+avgnet2      
+bnlearn::score(avgnet2, data = netdata)
+thresh <- avgnet2$learning$args[[1]]
+thresh                                  ## optimal significance threshold
+astr2 <- arc.strength(avgnet2, netdata, "bic-g")   ## compute edge strengths
+astr2
+
+suppressWarnings(strength.plot(avgnet2, astr2, shape = "ellipse", threshold = 0.5))
+
+## net3: use net2 threshold, edge strenghts are determined by direction probability
+boottab <- bootnet[bootnet$strength > thresh & bootnet$direction > 0.5, ]  ## edges in net2
+boottab
+astr3 <- boottab   ## table with direction probabilities
+astr3$strength <- astr3$direction  ## use the direction probabilities for edge width
+
+strength.plot(avgnet2, astr3, shape = "ellipse")
+## thick arrows indicate high directional probabilties, thin arrows low directional probabilities
+
+## net4: use net1 threshold, edge strenghts are determined by direction probability
+boottab <- bootnet[bootnet$strength > 0.85 & bootnet$direction > 0.5, ]  ## edges in net2
+boottab
+astr4 <- boottab   ## table with direction probabilities
+astr4$strength <- astr4$direction  ## use the direction probabilities for edge width
+
+strength.plot(avgnet1, astr4, shape = "ellipse")
+## thick arrows indicate high directional probabilties, thin arrows low directional probabilities
+

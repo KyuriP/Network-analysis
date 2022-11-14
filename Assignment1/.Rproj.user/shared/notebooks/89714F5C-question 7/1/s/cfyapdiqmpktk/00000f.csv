@@ -1,0 +1,33 @@
+"0","require(""ggdag"")"
+"2","Loading required package: ggdag
+"
+"2","
+Attaching package: ‘ggdag’
+
+"
+"2","The following object is masked from ‘package:stats’:
+
+    filter
+
+"
+"0","require(""ggplot2"")"
+"2","Loading required package: ggplot2
+"
+"0","library(ggdag)"
+"0","our_dag <- ggdag::dagify(smoke ~ susceptible,"
+"0","                         smoke ~ try,"
+"0","                         cancer ~ smoke,"
+"0","                         finger ~ smoke,"
+"0","                         susceptible ~ genes) %>% "
+"0","                         tidy_dagitty() %>% "
+"0","                         dag_label(labels= c(""smoke"" = ""smoke"","
+"0","                                             ""susceptible"" = ""susceptible"", "
+"0","                                             ""try"" = ""try"", "
+"0","                                             ""cancer"" = ""cancer"","
+"0","                                             ""finger"" = ""finger"", "
+"0","                                             ""genes"" = ""genes""))"
+"0","p <- ggdag::ggdag(our_dag, node_size = 20, text_size = 2.5)+theme_dag()"
+"0",""
+"0","p$layers[[3]]$mapping <- "
+"0","  ggplot2::aes(colour = c(""unconclusive"", ""conclusive"")[as.numeric(name == ""try""| name == ""susceptible"") + 1])"
+"0","p + ggplot2::scale_color_manual(values = c(""#cc2055"", ""black"")) "

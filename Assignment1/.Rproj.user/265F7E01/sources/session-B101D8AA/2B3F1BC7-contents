@@ -1,0 +1,163 @@
+
+@article{borsboom_2008,
+	title = {Psychometric perspectives on diagnostic systems},
+	volume = {64},
+	issn = {1097-4679},
+	url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/jclp.20503},
+	doi = {10.1002/jclp.20503},
+	abstract = {The author identifies four conceptualizations of the relation between symptoms and disorders as utilized in diagnostic systems such as the Diagnostic and Statistical Manual of Mental Disorders, Fourth Edition (DSM-IV; American Psychiatric Association, 1994): A constructivist perspective, which holds that disorders are conveniently grouped sets of symptoms; a diagnostic perspective, which holds that disorders are latent classes underlying the symptoms; a dimensional perspective, which holds that symptoms measure latent continua; and a causal systems perspective, which holds that disorders are causal networks consisting of symptoms and direct causal relations between them. Advantages and disadvantages of these conceptualizations are discussed. The author concludes that the psychometric analysis of diagnostic systems is not settled, and that these systems require deeper psychometric analysis than they currently receive. © 2008 Wiley Periodicals, Inc. J Clin Psychol 64: 1089–1108, 2008.},
+	language = {en},
+	number = {9},
+	urldate = {2022-11-11},
+	journal = {Journal of Clinical Psychology},
+	author = {Borsboom, Denny},
+	year = {2008},
+	note = {\_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1002/jclp.20503},
+	keywords = {causal networks, diagnostic systems, latent variable models, psychometrics, theoretical psychology},
+	pages = {1089--1108},
+	file = {Full Text PDF:/Users/Kyuri1/Zotero/storage/GWREXTNH/Borsboom - 2008 - Psychometric perspectives on diagnostic systems.pdf:application/pdf;Snapshot:/Users/Kyuri1/Zotero/storage/E5X2PGCX/jclp.html:text/html},
+}
+
+@article{piccirillo_2019,
+	title = {Foundations of idiographic methods in psychology and applications for psychotherapy},
+	volume = {71},
+	issn = {0272-7358},
+	url = {https://www.sciencedirect.com/science/article/pii/S0272735818303015},
+	doi = {10.1016/j.cpr.2019.01.002},
+	abstract = {Researchers have long called for greater recognition and use of longitudinal, individual-level research in the study of psychopathology and psychotherapy. Much of our current research attempts to indirectly investigate individual-level, or idiographic, psychological processes via group-based, or nomothetic, designs. However, results from nomothetic research do not necessarily translate to the individual-level. In this review, we discuss how idiographic analyses can be integrated into psychotherapy and psychotherapy research. We examine and review key statistical methods for conducting idiographic analyses. These methods include factor-based and vector autoregressive approaches using longitudinal data. The theoretical framework behind each approach is reviewed and critically evaluated. Empirical examples of each approach are discussed, with the aim of helping interested readers consider how they may use idiographic methods to analyze longitudinal data and psychological processes. Finally, we conclude by citing key limitations of the idiographic approach, calling for greater development of these analyses to ease their successful integration into clinical settings.},
+	language = {en},
+	urldate = {2022-11-11},
+	journal = {Clinical Psychology Review},
+	author = {Piccirillo, Marilyn L. and Rodebaugh, Thomas L.},
+	month = jul,
+	year = {2019},
+	keywords = {Idiographic, Individual-level, Methodology, Psychopathology, Psychotherapy},
+	pages = {90--100},
+	file = {ScienceDirect Snapshot:/Users/Kyuri1/Zotero/storage/Y4BD42CK/S0272735818303015.html:text/html;Submitted Version:/Users/Kyuri1/Zotero/storage/V6R5QRQD/Piccirillo and Rodebaugh - 2019 - Foundations of idiographic methods in psychology a.pdf:application/pdf},
+}
+
+@article{fried_2017,
+	title = {Mental disorders as networks of problems: a review of recent insights},
+	volume = {52},
+	issn = {0933-7954},
+	shorttitle = {Mental disorders as networks of problems},
+	url = {https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5226976/},
+	doi = {10.1007/s00127-016-1319-z},
+	abstract = {Purpose
+The network perspective on psychopathology understands mental disorders as complex networks of interacting symptoms. Despite its recent debut, with conceptual foundations in 2008 and empirical foundations in 2010, the framework has received considerable attention and recognition in the last years.
+
+Methods
+This paper provides a review of all empirical network studies published between 2010 and 2016 and discusses them according to three main themes: comorbidity, prediction, and clinical intervention.
+
+Results
+Pertaining to comorbidity, the network approach provides a powerful new framework to explain why certain disorders may co-occur more often than others. For prediction, studies have consistently found that symptom networks of people with mental disorders show different characteristics than that of healthy individuals, and preliminary evidence suggests that networks of healthy people show early warning signals before shifting into disordered states. For intervention, centrality—a metric that measures how connected and clinically relevant a symptom is in a network—is the most commonly studied topic, and numerous studies have suggested that targeting the most central symptoms may offer novel therapeutic strategies.
+
+Conclusions
+We sketch future directions for the network approach pertaining to both clinical and methodological research, and conclude that network analysis has yielded important insights and may provide an important inroad towards personalized medicine by investigating the network structures of individual patients.
+
+Electronic supplementary material
+The online version of this article (doi:10.1007/s00127-016-1319-z) contains supplementary material, which is available to authorized users.},
+	number = {1},
+	urldate = {2022-11-11},
+	journal = {Social Psychiatry and Psychiatric Epidemiology},
+	author = {Fried, Eiko I. and van Borkulo, Claudia D. and Cramer, Angélique O. J. and Boschloo, Lynn and Schoevers, Robert A. and Borsboom, Denny},
+	year = {2017},
+	pmid = {27921134},
+	pmcid = {PMC5226976},
+	pages = {1--10},
+	file = {PubMed Central Full Text PDF:/Users/Kyuri1/Zotero/storage/R8ESSCTB/Fried et al. - 2017 - Mental disorders as networks of problems a review.pdf:application/pdf},
+}
+
+@article{robinaugh_2020,
+	title = {The {Network} {Approach} to {Psychopathology}: {A} {Review} of the {Literature} 2008–2018 and an {Agenda} for {Future} {Research}},
+	volume = {50},
+	issn = {0033-2917},
+	shorttitle = {The {Network} {Approach} to {Psychopathology}},
+	url = {https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7334828/},
+	doi = {10.1017/S0033291719003404},
+	abstract = {The network approach to psychopathology posits that mental disorders can be conceptualized and studied as causal systems of mutually reinforcing symptoms. This approach, first posited in 2008, has grown substantially over the past decade and is now a full-fledged area of psychiatric research. In this article, we provide an overview and critical analysis of 363 articles produced in the first decade of this research program, with a focus on key theoretical, methodological, and empirical contributions. In addition, we turn our attention to the next decade of the network approach and propose critical avenues for future research in each of these domains. We argue that this program of research will be best served by working toward two overarching aims: (a) the identification of robust empirical phenomena and (b) the development of formal theories that can explain those phenomena. We recommend specific steps forward within this broad framework and argue that these steps are necessary if the network approach is to develop into a progressive program of research capable of producing a cumulative body of knowledge about how specific mental disorders operate as causal systems.},
+	number = {3},
+	urldate = {2022-11-11},
+	journal = {Psychological medicine},
+	author = {Robinaugh, Donald J. and Hoekstra, Ria H. A. and Toner, Emma R. and Borsboom, Denny},
+	month = feb,
+	year = {2020},
+	pmid = {31875792},
+	pmcid = {PMC7334828},
+	pages = {353--366},
+	file = {PubMed Central Full Text PDF:/Users/Kyuri1/Zotero/storage/4MSL3HRM/Robinaugh et al. - 2020 - The Network Approach to Psychopathology A Review .pdf:application/pdf},
+}
+
+@article{groen_2020,
+	title = {Comorbidity between depression and anxiety: assessing the role of bridge mental states in dynamic psychological networks},
+	volume = {18},
+	issn = {1741-7015},
+	shorttitle = {Comorbidity between depression and anxiety},
+	url = {https://doi.org/10.1186/s12916-020-01738-z},
+	doi = {10.1186/s12916-020-01738-z},
+	abstract = {Comorbidity between depressive and anxiety disorders is common. A hypothesis of the network perspective on psychopathology is that comorbidity arises due to the interplay of symptoms shared by both disorders, with overlapping symptoms acting as so-called bridges, funneling symptom activation between symptom clusters of each disorder. This study investigated this hypothesis by testing whether (i) two overlapping mental states “worrying” and “feeling irritated” functioned as bridges in dynamic mental state networks of individuals with both depression and anxiety as compared to individuals with either disorder alone, and (ii) overlapping or non-overlapping mental states functioned as stronger bridges.},
+	language = {en},
+	number = {1},
+	urldate = {2022-11-11},
+	journal = {BMC Medicine},
+	author = {Groen, Robin N. and Ryan, Oisín and Wigman, Johanna T. W. and Riese, Harriëtte and Penninx, Brenda W. J. H. and Giltay, Erik J. and Wichers, Marieke and Hartman, Catharina A.},
+	month = sep,
+	year = {2020},
+	keywords = {Anxiety, Bridge symptoms, Comorbidity, Depression, Ecological momentary assessment, Intensive longitudinal data, Network analysis, Time series},
+	pages = {308},
+	file = {Full Text PDF:/Users/Kyuri1/Zotero/storage/DG944Z3V/Groen et al. - 2020 - Comorbidity between depression and anxiety assess.pdf:application/pdf},
+}
+
+@article{oude_2020,
+	title = {Reformulating the network theory of mental disorders: {Folk} psychology as a factor, not a fact},
+	volume = {30},
+	issn = {0959-3543},
+	shorttitle = {Reformulating the network theory of mental disorders},
+	url = {https://doi.org/10.1177/0959354320921464},
+	doi = {10.1177/0959354320921464},
+	abstract = {Borsboom et al. (2019) argue that the network theory of mental disorders, if correct, blocks the biological reduction of mental disorders. This is mainly argued through a partial reformulation of network theory which combines multiple realizability of symptoms with a realist interpretation of folk psychological explanations. In this article, I argue that (a) the latter is problematic and that (b) the combination of these arguments voids the previous predictive and explanatory power of network theory. I then present a novel way in which network theory could avoid biological reductionism by considering folk psychology not as a fact, but as a structuring cause of causal connections between intentional state symptoms, together with culture and time period. Drawing from this, a novel principle for network theory is proposed, which allows it to retain force against reductionism while also retaining predictive and explanatory power.},
+	language = {en},
+	number = {5},
+	urldate = {2022-11-11},
+	journal = {Theory \& Psychology},
+	author = {Oude Maatman, Freek},
+	month = oct,
+	year = {2020},
+	note = {Publisher: SAGE Publications Ltd},
+	pages = {703--722},
+	file = {SAGE PDF Full Text:/Users/Kyuri1/Zotero/storage/A9RGLD29/Oude Maatman - 2020 - Reformulating the network theory of mental disorde.pdf:application/pdf},
+}
+
+
+
+@article{deboer_2021,
+	abstract = {Borsboom and colleagues have recently proposed a ``network theory'' of psychiatric disorders that conceptualizes psychiatric disorders as relatively stable networks of causally interacting symptoms. They have also claimed that the network theory should include non-symptom variables such as environmental factors. How are environmental factors incorporated in the network theory, and what kind of explanations of psychiatric disorders can such an ``extended'' network theory provide? The aim of this article is to critically examine what explanatory strategies the network theory that includes both symptoms and environmental factors can accommodate. We first analyze how proponents of the network theory conceptualize the relations between symptoms and between symptoms and environmental factors. Their claims suggest that the network theory could provide insight into the causal mechanisms underlying psychiatric disorders. We assess these claims in light of network analysis, Woodward's interventionist theory, and mechanistic explanation, and show that they can only be satisfied with additional assumptions and requirements. Then, we examine their claim that network characteristics may explain the dynamics of psychiatric disorders by means of a topological explanatory strategy. We argue that the network theory could accommodate topological explanations of symptom networks, but we also point out that this poses some difficulties. Finally, we suggest that a multilayer network account of psychiatric disorders might allow for the integration of symptoms and non-symptom factors related to psychiatric disorders and could accommodate both causal/mechanistic and topological explanations.},
+	author = {de Boer, Nina S. and de Bruin, Leon C. and Geurts, Jeroen J. G. and Glas, Gerrit},
+	file = {Full Text PDF:/Users/Kyuri1/Zotero/storage/VHFHKN8N/de Boer et al. - 2021 - The Network Theory of Psychiatric Disorders A Cri.pdf:application/pdf},
+	issn = {1664-1078},
+	journal = {Frontiers in Psychology},
+	shorttitle = {The {Network} {Theory} of {Psychiatric} {Disorders}},
+	title = {The {Network} {Theory} of {Psychiatric} {Disorders}: {A} {Critical} {Assessment} of the {Inclusion} of {Environmental} {Factors}},
+	url = {https://www.frontiersin.org/articles/10.3389/fpsyg.2021.623970},
+	urldate = {2022-11-11},
+	volume = {12},
+	year = {2021},
+	bdsk-url-1 = {https://www.frontiersin.org/articles/10.3389/fpsyg.2021.623970}}
+
+
+
+
+@article{borsboom_2013,
+	abstract = {In network approaches to psychopathology, disorders result from the causal interplay between symptoms (e.g., worry → insomnia → fatigue), possibly involving feedback loops (e.g., a person may engage in substance abuse to forget the problems that arose due to substance abuse). The present review examines methodologies suited to identify such symptom networks and discusses network analysis techniques that may be used to extract clinically and scientifically useful information from such networks (e.g., which symptom is most central in a person's network). The authors also show how network analysis techniques may be used to construct simulation models that mimic symptom dynamics. Network approaches naturally explain the limited success of traditional research strategies, which are typically based on the idea that symptoms are manifestations of some common underlying factor, while offering promising methodological alternatives. In addition, these techniques may offer possibilities to guide and evaluate therapeutic interventions.},
+	author = {Borsboom, Denny and Cramer, Angelique},
+	doi = {10.1146/annurev-clinpsy-050212-185608},
+	file = {Full Text PDF:/Users/Kyuri1/Zotero/storage/LNKMMFXH/Borsboom and Cramer - 2013 - Network Analysis An Integrative Approach to the S.pdf:application/pdf},
+	journal = {Annual review of clinical psychology},
+	month = mar,
+	pages = {91--121},
+	shorttitle = {Network {Analysis}},
+	title = {Network {Analysis}: {An} {Integrative} {Approach} to the {Structure} of {Psychopathology}},
+	volume = {9},
+	year = {2013},
+	bdsk-url-1 = {https://doi.org/10.1146/annurev-clinpsy-050212-185608}}
+
