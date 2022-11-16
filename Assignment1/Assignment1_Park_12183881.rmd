@@ -15,7 +15,7 @@ geometry: margin = 2cm
 linestretch: 1.1
 highlight: tango
 header-includes:
-  - \usepackage{wrapfig, cancel, mathtools, amsmath}
+  - \usepackage{wrapfig, cancel, amsmath, multicol, caption}
 ---
 
 <!-- function for conditional independence -->
@@ -52,9 +52,9 @@ set.seed(123)
 
 2. *FALSE*: the links between nodes in a network model represent statistical relationships, which cannot be directly translated into causal relationships.
 
-3. *TRUE*: the statement is true.
+3. *TRUE*: the statement is true, as it follows from the PMRF definition.
 
-4. *TRUE*: for an undirected network, the possible number of edges ($m$) can be computed as $n \choose 2$ $= n(n-1)/2$.
+4. *TRUE*: for an undirected network, the possible number of edges ($m$) can be computed as $\binom{n}{2}$ $= n(n-1)/2$.
 
 5. *TRUE*: the statement is true as PMRFs may be suggestive of causal structure, even though they cannot establish causal relations directly.
 
@@ -106,26 +106,46 @@ Recently though, there has been active research going on estimating causal netwo
 ## Question 5 (1 point)
 **For the indicated graph, explain the dependency structure at hand. What happens if variable $C$ is observed?**
 
-![Path](img/NA_01_Path.png){width=30%}
+![](img/NA_01_Path.png){width=30%}
 
-- $A$ and $B$ are marginally dependent due to the common effect : $A \ \nbigCI \ B$.
-- $A$ and $B$ are conditionally independent given C: $A \bigCI B \mid C$.
-- If variable $C$ is observed, ... (If C were to be a latent variable and we observed dependency between A and B, then we could have thought that A and B are (marginally) related. However, if we were to observe C and it is not latent any longer, then we can correctly conclude that dependence between A and B is produced by the common cause C, meaning that conditioning on C would screen off the relation between A and B.)
+- $A$ and $B$ are marginally dependent due to the common cause $C$ : $A$ $\nbigCI$ $B$. In other words, $C$ is a confounder, which explains the association between $A$ and $B$.  
+- If variable $C$ is observed, $A$ and $B$ are conditionally independent given C: $A$ $\bigCI$ $B$ $\mid$ $C$. That is, the association between $A$ and $B$ disappears if you condition on the confounder $C$. 
+
+\setlength{\parindent}{0in}
 
 
 ## Question 6 (1 point)
-**For the indicated graph below first indicate for each node $x_{k}$ its parent nodes $pa_{k}$. The joint distribution of a graph with $K$ nodes can be expressed by:**
+**For the indicated graph below first indicate for each node $x_{k}$ its parent nodes $pa_{k}$. Using this formula, write down the joint distribution $p(x_1,...,x_7)$ for the graph below.**
 
+<!-- ![DAG](img/NA_01_DAG.png){width=30%} -->
+\begin{multicols}{2}
+
+  \null \vfill
+  \includegraphics[width=.3\textwidth]{img/NA_01_DAG.png}
+  \vfill \null
+
+\columnbreak
+
+  \null \vfill
+  \begin{itemize}
+    \item $pa_1 = \emptyset$  
+    \item $pa_2 = \emptyset$  
+    \item $pa_3 = \emptyset$ 
+    \item $pa_4 = \{x_1, x_2, x_3\}$  
+    \item $pa_5 = \{x_1, x_3\}$  
+    \item $pa_6 = \{x_4\}$  
+    \item $pa_7 = \{x_4, x_5\}$  
+  \end{itemize}
+  \vfill \null
+\end{multicols}
+
+
+Joint distribution for the graph is as follows:
 $$
-  p(x) = \prod_{k=1}^{K} p(x_{k}\mid pa_{k}) 
+p(x_1,x_2,x_3,x_4,x_5,x_6,x_7) = p(x_1) \cdot p(x_2) \cdot p(x_3) \cdot p(x_4 | x_1, x_2, x_3) \cdot p(x_5 | x_1, x_3) \cdot p(x_6|x_4) \cdot p(x_7|x_4, x_5)
 $$
 
-**where $pa_{k}$ denotes the set of parents of $x_{k}$. Using this formula, write down the joint distribution $p(x_1,...,x_7)$ for the graph below.**
 
-![DAG](img/NA_01_DAG.png){width=30%}
-
-Joint distribution for the graph (Figure 2) is as follows:
-$$p(x_1,x_2,x_3,x_4,x_5,x_6,x_7) = p(x_1) \cdot p(x_2) \cdot p(x_3) \cdot p(x_4 | x_1, x_2, x_3) \cdot p(x_5 | x_1, x_3) \cdot p(x_6|x_4) \cdot p(x_7|x_4, x_5)$$
 
 ## Question 7
 
@@ -165,7 +185,7 @@ C) Yes, `fingers` and `cancer` are conditionally independent given `smoke`.
 D) No, `smoke` and `fingers` are *not* conditionally independent given `cancer`.
 E)  `fingers` and `smoke` are *not* independent.  
    `cancer` and `smoke` are *not* independent.  
-   _The causal path that is consistent to statistical test results is:_  
+   _The causal path that is consistent with the data is:_  
    _**`fingers` $\rightarrow$ `smoke` $\rightarrow$ `cancer`** and **`fingers` $\leftarrow$ `smoke` $\rightarrow$ `cancer`**_
 
 ```{r, echo=FALSE, fig.height=2, fig.align='center'}
@@ -218,7 +238,7 @@ C) `susceptible` and `smoke` are *not* independent.
    `try` and `smoke` are *not* independent.  
    `susceptible` and `smoke` are *not* conditionally independent given `try`.  
    `try` and `smoke` are *not* conditionally independent given `susceptible`.  
-  _The causal path that is consistent to statistical test results is: **`susceptible` $\rightarrow$ `smoke` $\leftarrow$ `try`**_
+  _The causal path that is consistent with the data is: **`susceptible` $\rightarrow$ `smoke` $\leftarrow$ `try`**_
 
 
 ```{r, echo=FALSE,  fig.height = 2, fig.width = 3, fig.align='center'}
@@ -257,7 +277,7 @@ C) `try` and `smoke` are *not* independent.
    `smoke` and `cancer` are *not* independent.  
    `try` and `smoke` are *not* conditionally independent given `cancer`.  
    `cancer` and `smoke` are *not* conditionally independent given `try`.  
-   _The causal path that is consistent to statistical test results is:_  
+   _The causal path that is consistent with the data is:_  
    _**`cancer` $\rightarrow$ `smoke` $\rightarrow$ `try`** and **`cancer` $\leftarrow$ `smoke` $\rightarrow$ `try`**_
    
 ```{r, echo=FALSE, fig.height=2, fig.align='center'}
@@ -296,7 +316,7 @@ D) `smoke` and `susceptible` are *not* independent.
    `genes` and `susceptible` are *not* independent.  
    `genes` and `susceptible` are *not* conditionally independent given `smoke`.  
    `susceptible` and `smoke` are *not* conditionally independent given `genes`.  
-   _The causal path that is consistent to statistical test results is:_  
+   _The causal path that is consistent with the data is:_  
    _**`genes` $\rightarrow$ `susceptible` $\rightarrow$ `smoke`** and **`genes` $\leftarrow$ `susceptible` $\rightarrow$ `smoke`**_
 
 ```{r, echo=FALSE, fig.height=2, fig.align='center'}
@@ -310,7 +330,6 @@ qgraph(Adj_fork,
        layout = laymat, vsize =vsize, esize = esize, asize = asize, labels = varnames)
 ```
 
-\setlength{\parindent}{0in}
 
 ### Question 7.5 (1 point)
 **Do any additional checks you want on the full dataset.Then draw your best guess of the DAG that created the data. Indicate the evidence you have for your DAG, as well as the evidence that speaks against it (if you have any). Also indicate for which parts of your DAG you have no conclusive evidence and explain why.**
@@ -320,29 +339,26 @@ I will use the (in)dependence relations I find using conditional independence te
 - **Principle 1**: Two variables A and B are directly connected in the DAG (either A $\rightarrow$B or B$\rightarrow$A) if and only if they are dependent conditional on every possible subset of the other variables.  
 - **Principle 2**: If the skeleton contains a triplet $A−B−C$, the edge can be orientated as A$\rightarrow$B$\leftarrow$C if and only if A and C are dependent conditional on every set of variables containing B.
 
-**Step1**: Perform marginal/conditional independence tests based on correlations using alpha level of 0.05 (assuming normal errors and linear relationships) for every possible pairs and triples.
+**Step1**: Perform marginal/conditional independence tests based on correlations using alpha level of 0.05 (assuming normal errors and linear relationships) for every possible pairs and triplets.
 
 Below, you can find the table of marginal relations between pairs. The conditional relations between triplets can be found in the *Appendix* at the end of the document (as it is quite lengthy).
 ```{r, results='hold'}
 ### Step1: perform conditional independence test
-## marginal (in)dependency
 # get the variable names
 variables <- colnames(datafile)
-# all possible combinations of pairs
+# get all possible combinations of pairs
 marginal_string <- t(combn(variables,2))
 colnames(marginal_string) <- c("DV1", "DV2")
 condition_vars <- list()
 for (i in 1:nrow(marginal_string)) {
-condition_vars[[i]] <- variables[!variables %in% marginal_string[i,]]
+  condition_vars[[i]] <- variables[!variables %in% marginal_string[i,]]
 }
-## conditional (in)dependency
-# condition on 1 variable
+# get all possible combinations of triplets
 cond1_string <- matrix("NA",60,3)
 colnames(cond1_string) <- c("DV1", "DV2", "Conditional on")
 for(i in 1:4){
   cond1_string[seq(i,60+(i-1), 4), c(1,2)] <- marginal_string[, c(1,2)]
 }
-# all possible combinations of triples
 sequence <- seq(1,60,4)
 for (i in 1:nrow(marginal_string)) {
   condition_var <- variables[!variables %in% marginal_string[i,]]
@@ -351,28 +367,24 @@ for (i in 1:nrow(marginal_string)) {
     cond1_string[sequence[i]+2,3] <- condition_var[3]
     cond1_string[sequence[i]+3,3] <- condition_var[4]
 }
-
-## test the marginal dependencies
+## test the marginal (in)dependency
 marg_p <- apply(marginal_string,1,function(r){
   cor.test(datafile[,r[1]], datafile[,r[2]])$p.value
 })
-
-## test the conditional dependencies
+## test the conditional (in)dependency
 c1_p <- apply(cond1_string,1,function(r){
   pcor.test(datafile[,r[1]], datafile[,r[2]], datafile[,r[3]])$p.value
 })
-
-# specify alpha level
-alpha = 0.05
-# results formatted in a table 
+## results formatted in a table 
+alpha = 0.05 # specify alpha level
 marg <- cbind(marginal_string,  Relation = ifelse(marg_p < alpha, "Dependent", "Independent"))
 cond <- cbind(cond1_string, Relation = ifelse(c1_p < alpha, "Dependent", "Independent"))
 pander(marg, caption = "Marginal relations between pairs")
-# pander(cond) # find the table in the Appendix
+# pander(cond) # find the conditional relations table in the Appendix
 ```
 
 
-**Step2**: Using the first principle, I will extract the skeleton of the DAG. I will start by drawing an undirected graph where every variable is connected to every other variable. Then, remove edges between variables if they are either marginally or conditionally independent in any of the tests in the previous step.
+**Step2**: Using the first principle, I will extract the skeleton of the DAG. I will start by drawing an undirected graph where every variable is connected to every other variables. Then, remove edges between variables if they are either marginally or conditionally independent in any of the tests from the previous step.
 
 ```{r, results='hide', fig.height=4}
 ### Step2: extract the skeleton
@@ -380,8 +392,7 @@ pander(marg, caption = "Marginal relations between pairs")
 marg %>% as.data.frame() %>% filter(Relation == "Independent") 
 cond %>% as.data.frame() %>% filter(Relation == "Independent") 
 
-## get the skeleton
-# fully connected matrix
+# get a fully connected matrix
 adj_full <- matrix(1,6,6)
 diag(adj_full) <- 0
 
@@ -405,15 +416,17 @@ qgraph(adj_full, labels = variables, vsize = 10, title="Fully Connected Graph")
 qgraph(adj, labels = variables, vsize = 10, title="Estimated Skeleton")
 ```
 
-**Step3**: Using the second principle, I basically perform d-separation rule for colliders and orient the edges. There are five triplets (A - B - C) I need to check if $A \nbigCI B \mid C$ holds:  
+**Step3**: Using the second principle, I basically perform d-separation rule for colliders and orient the edges. There are six triplets (A - B - C) I need to check if $A \nbigCI B \mid C$ holds:  
 A) `cancer` - `smoke` - `fingers`  
-B) `fingers` - `smoke` - `susceptible`    
-C) `smoke` - `susceptible` - `genes`    
-D) `cancer` - `smoke` - `try`  
-E) `try` - `smoke` - `susceptible`
+B) `cancer` - `smoke` - `susceptible`  
+C) `fingers` - `smoke` - `susceptible`    
+D) `smoke` - `susceptible` - `genes`    
+E) `cancer` - `smoke` - `try`  
+F) `try` - `smoke` - `susceptible`
 
-As shown in *Table 2* (see Appendix), only `try` - `smoke` - `susceptible` has conditional dependence. Accordingly, we can orient it such that `try` $\rightarrow$ `smoke` $\leftarrow$ `susceptible`.
-Upon identifying only one collider in the structure, we can also orient the following edges: `susceptible` $\rightarrow$ `smoke` $\rightarrow$ `fingers` and `cancer` $\leftarrow$ `smoke` $\leftarrow$ `try` because otherwise they also have to be colliders, which cannot be the case based on the found statistical relations. See below for the resulting complete partially directed acyclic graph (CPDAG).
+
+As shown in *Table 2* (see Appendix), only `try` - `smoke` - `susceptible` has a conditional dependence (`try` $\nbigCI$ `susceptible` $\mid$ `smoke`). Accordingly, we can orient the edge such that `try` $\rightarrow$ `smoke` $\leftarrow$ `susceptible`.
+Upon identifying only one collider in the structure, we can also orient the following edges: `susceptible` $\rightarrow$ `smoke` $\rightarrow$ `fingers` and `cancer` $\leftarrow$ `smoke` $\leftarrow$ `try` because otherwise they also have to be colliders, which cannot be the case based on the found statistical relations. See below for the resulting *complete partially directed acyclic graph* (CPDAG).
 ```{r, out.width="50%", fig.align='center'}
 ### Step3: identify colliders to orient edges
 # specify directed (true) and undirected (false) edges
@@ -424,9 +437,13 @@ qgraph(adj, labels = variables,  directed = cptf, title = "Estimated CPDAG",
        asize = 5, vsize = 13, title.cex = 1.5)
 ```
 
-**Conclusion**: Given the estimated CPDAG, we have two DAGs in the equivalence set (see below), as the relation between `susceptible` - `genes` is inconclusive based on the result of (in)dependence tests. My guess for the true DAG is the one on the left, DAG *(a)*. It makes more sense than DAG *(b)*, as `genes` can sensically affect `susceptibility` but not the other way around. 
+**Conclusion**: Given the estimated CPDAG, we have two DAGs in the equivalence set (see below), as the relation between `susceptible` - `genes` is *inconclusive* based on the result of (in)dependence tests. I believe that the true DAG is the one on the left, DAG **(a)**, because `genes` can sensically affect `susceptibility` but not the other way around (i.e., susceptibility influences genes is not practically possible).  
 
-```{r DAGs, fig.height = 2.5}
+In addition, there has been found some inconsistencies from the statistical test results; presumed that DAG **(a)** is indeed true, the marginal independencies found between `genes` - `cancer` and `susceptible` - `cancer` no longer hold, as they are connected with *chain* structure. However, given that the implied relationships represented by DAG **(a)** make a lot of sense in substantive term (e.g., *being a smoker &ndash; causes $\rightarrow$ yellow-stained finger; being a smoker &ndash; causes $\rightarrow$ cancer; how often a person has tried cigarettes during adolescence &ndash; causes $\rightarrow$ being a smoker; genes &ndash; causes $\rightarrow$ susceptibility; susceptibility &ndash; causes $\rightarrow$ being a smoker*), I would think that the inconsistent marginal relationships are likely to be due to sampling errors. Therefore, my best guess for the true DAG stays the same as DAG **(a)**.
+
+\vspace{1cm}
+
+```{r DAGs, fig.height = 2.5, echo=FALSE}
 # orient edges
 cptf1 <- cptf2 <- cptf
 # DAG (a)
@@ -437,9 +454,9 @@ adj2 <- adj
 adj2[1,2] <- 0
 # plot the DAGs
 par(mfrow = c(1,2))
-qgraph(adj, labels = variables,  directed = cptf1, title = "(a)",  asize = 5, vsize = 15)
+qgraph(adj, labels = variables,  directed = cptf1, title = "DAG (a)",  asize = 5, vsize = 15)
 box("figure", col="red", lwd=1) # add outlining box
-qgraph(adj2, labels = variables,  directed = cptf2, title = "(b)",  asize = 5, vsize = 15)
+qgraph(adj2, labels = variables,  directed = cptf2, title = "DAG (b)",  asize = 5, vsize = 15)
 ```
 
 
@@ -486,7 +503,7 @@ qgraph(mat2, directed=FALSE, shape = "square", color = rainbow(5),
 
 **Step1**. Presumed that 5-point Likert sacle is sufficient to be treated as interval scales, I decide to use GGM (gaussian graphical model) to estimate the network model of these symptoms.  
 **Step2**. Before going about fitting the network, I check the distribution of variables to see if they approximate the normal distribution to some extent. I will transform the data if they deviate much from the normal distribution.  
-**Step3**. In order to get a sparse network, I use *glasso* regularization based on EBIC (Extended Bayesian Information Criteria). I tweak the hyperparameter ($\gamma$) to find the optimal sparsity.  
+**Step3**. In order to get a sparse network, I use *glasso* regularization based on EBIC (Extended Bayesian Information Criteria). I tweak the hyperparameter ($\gamma$) to find the optimal density.    
 **Step4**. Given the final network model I choose, I explain how I plot the network graph and give some subtantive interpretation on what I can infer from the resulting model. 
 ```{r prep, results='hide'}
 ## prepartion
@@ -540,16 +557,16 @@ list(0.4, 0.5, 0.6, 0.7) %>%
 
 As there are quite many variables in the dataset, I decide to apply regularization using *glasso* to get a more sparse network. Given that the general suggestion of gamma ($\gamma$) value is 0.5 [@foygel2010], I vary the gamma value from 0.4 to 0.7 and check the different resulting networks in terms of density.  
 
-Figure \@ref(fig:tunegamma) shows networks with varying gamma values. I find the optimal density when $gamma = 0.6$. Even though the chosen model might have omitted some true edges since I apply quite a conservative gamma value, I prioritize having less false positives (i.e., less spurious edges) in this case. Hence, my final chosen model is the one with $\gamma = 0.6$ (bottom left in Figure \@ref(fig:tunegamma)).
+Figure \@ref(fig:tunegamma) shows networks with varying gamma values. I find the optimal density when $gamma = 0.6$. Even though the chosen model might have omitted some true edges (since I apply quite a conservative gamma value), I want to prioritize having less false positives (i.e., less spurious edges) in this case. Hence, my final chosen model is the one with $\gamma = 0.6$ (bottom left in Figure \@ref(fig:tunegamma)).
 
 
 ```{r finalnetwork, out.width="130%", fig.align='center', fig.cap="Final model-OCD and depression symptoms"}
-## final model: choose gamma = 0.6 for the best sparse network
+## final model: pick gamma = 0.6 for the best sparse network
 EBICglasso(cormat, n = nrow(transformed_dat), gamma = 0.6) %>% 
                qgraph(layout = "spring",
                       theme= "colorblind",  
                       groups = list(Depression = 1:16, OCD = 17:26), 
-                      color = brewer.pal(2, "Pastel2"), 
+                      color = brewer.pal(8, "Pastel2")[c(1,2)], 
                       vsize = 5,
                       nodeNames = colnames(transformed_dat),
                       legend.cex=0.35,
@@ -560,7 +577,7 @@ EBICglasso(cormat, n = nrow(transformed_dat), gamma = 0.6) %>%
 
 - **Final network model explanation & interpretation**  
 
-As explained above, regularization is applied to this final model using `EBICglasso` function, as I wanted to suppress spurious relations. I used gamma value of 0.6, as it gives the optimal density in my perspective (see Figure \@ref(fig:tunegamma)). As my input is a symmetrical correlation matrix (weight matrix), `qgraph` automatically spits out an undirected network, which is appropriate in this case as I don't know the directionality in relations. I used `layout="spring"` to use the force-embedded layout, which improves the interpretability of the network compared to using the default `circular` layout setting. Then, I used `colorblind` theme for the edges to represent the positive/negative edges in blue and red respectively such that it is colorblind-friendly. I specify the `groups` for the symptoms as per its belonging disorder so that the nodes can be colored correspondingly, which thus helps identifying the possible clusters. As the original symptom names are quite long, I let `qgraph` use the abbreviated names and specify the `nodeNames` so that the full names can be shown in the legend. In addition, I used `cut = 0` to disable the cutoff such that all edges can vary in width and color (saturation) depending on their weights, because this enhances interpretation of the edges. Lastly, I used `maximum = 0.44`, which is the default setting, that is the strongest edge weight in the network. I did not change to 1 (the possibly maximum correlation), as I am mostly interested in the relative strength of relations in this network, not necessarily comparing it to the absolute maximum strength. There are some other minor arguments that I used for aesthetic reasons (e.g., node size, color choice, legend text size).
+As explained above, regularization is applied to this final model using `EBICglasso` function, as I wanted to suppress spurious relations. I used gamma value of 0.6, as it gives the optimal density in my perspective (see Figure \@ref(fig:tunegamma)). As my input is a symmetrical correlation matrix (weight matrix), `qgraph` automatically spits out an undirected network, which is appropriate in this case as I don't know the directionality in relations. I used `layout="spring"` to use the force-embedded layout, which improves the interpretability of the network compared to using the default `circular` layout setting. Then, I used `colorblind` theme for the edges to represent the positive/negative edges in blue and red respectively such that it is colorblind-friendly. I specify the `groups` for the symptoms as per its belonging disorder so that the nodes can be colored correspondingly, which thus helps identifying the possible clusters. As the original symptom names are quite long, I let `qgraph` use the abbreviated names and specify the `nodeNames` so that the full names can be shown in the legend. In addition, I used `cut = 0` to disable the cutoff such that all edges can vary in width and color (saturation) depending on their weights, because this enhances interpretation of the edges. Lastly, I used `maximum = 0.44`, which is the default setting, that is the strongest edge weight in the network. I did not change to 1 (the possibly maximum correlation), as I am mostly interested in the relative strength of relations in this network, not necessarily comparing it to the absolute maximum strength. There are some other minor arguments that I used for aesthetic reasons (e.g., node size, color choice, legend size).
 
 
 Figure \@ref(fig:finalnetwork) shows the final network model of OCD and depression symptoms. The network represents the regularized partial correlations (edges) between the symptoms of OCD and depression (nodes). What stands out at a first peek of this network is the clustering of symptoms. The OCD symptoms seem to cluster together so do the depression symptoms. And there is seemingly a sub-cluster in the depression symptoms including `inc`, `wghtg`, `wghtl` and `dcp`^[`inc` = increased appetite; `wghtg` = weight gain; `wghtl` = weight loss; `dcp` = decreased appetite]. Some of the strong edges are observed between `cmpr` & `obr`, `inc` & `wghtg`, and `obd` & `obn`^[`cmpr` = difficulty resisting compulsion; `obr` = difficulty resisting obsessions; `inc` = increased appetite; `wghtg` = weight gain; `obd` = distress caused by obsession; `obn` =  interference due to obsessions] , indicating that they are likely to occur together. Note that given this undirected partial correlation network, the directionality between the symptoms cannot be inferred. In addition, another interesting thing that can be found from this network is the connections between the OCD cluster and depression cluster. There are quite a lot of edges between them and especially the node `obn` (interference due to obsessions) has a lot of connections with the depression symptoms. This may indicate that `obn` is a critical symptom when it comes to the comorbidity between OCD and depression. 
@@ -571,19 +588,19 @@ Figure \@ref(fig:finalnetwork) shows the final network model of OCD and depressi
 <div id="refs"></div>
 
 # Appendix
-```{r}
+```{r, echo = FALSE}
 # conditional relations
-pander(cond, caption = "Condtional relations of triplets")
+pander(cond, caption = "Condtional relations of all possible triplets")
 ```
 
 
-```{r, fig.width=15}
-## correlation plot
-# upper <- round(cormat,2)
-# upper[upper.tri(cormat)] <- ""
-# as.data.frame(upper)
+<!-- ```{r, fig.width=15} -->
+<!-- ## correlation plot -->
+<!-- # upper <- round(cormat,2) -->
+<!-- # upper[upper.tri(cormat)] <- "" -->
+<!-- # as.data.frame(upper) -->
 
-corrplot::corrplot(cormat, method = "number", type = 'lower', diag = FALSE, number.cex=0.5,
-                   tl.cex=0.7, tl.col = "black", order="AOE", addCoef.col="black")
-```
+<!-- corrplot::corrplot(cormat, method = "number", type = 'lower', diag = FALSE, number.cex=0.5, -->
+<!--                    tl.cex=0.7, tl.col = "black", order="AOE", addCoef.col="black") -->
+<!-- ``` -->
 
