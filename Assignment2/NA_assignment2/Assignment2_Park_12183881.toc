@@ -1,0 +1,18 @@
+\contentsline {section}{Conceptual Questions}{2}{section*.2}%
+\contentsline {subsection}{Question 1 (3 points)}{2}{section*.3}%
+\contentsline {section}{Partial Correlation Networks}{2}{section*.4}%
+\contentsline {subsection}{Question 2 (2 points)}{3}{section*.5}%
+\contentsline {subsection}{Question 3 (1 point)}{3}{section*.6}%
+\contentsline {section}{Ising Model}{5}{section*.7}%
+\contentsline {subsection}{Question 4 (2 points)}{5}{section*.8}%
+\contentsline {section}{Network Inference}{6}{section*.10}%
+\contentsline {subsection}{Question 5 (2 points)}{6}{section*.11}%
+\contentsline {section}{Accuracy and stability (conceptual)}{8}{section*.13}%
+\contentsline {subsection}{Question 6 (3 points)}{8}{section*.14}%
+\contentsline {subsubsection}{6-1. Compute the sensitivity, the specificity, and the edge weight correlation for the network model you estimated from the simulated data. Which conclusions can you draw from your calculations? (2 points)}{8}{section*.15}%
+\contentsline {subsubsection}{6-2. As we have also discussed during the lecture, there is a trade-off between the sensitivity, specificity, and the estimation parameters that we have set. What do you expect to happen to the sensitivity and specificity when you would lower the tuning hyper parameter? (1 points)}{8}{section*.16}%
+\contentsline {subsection}{Question 7 (2 points)}{9}{section*.17}%
+\contentsline {subsection}{Question 8 (3 points)}{14}{section*.22}%
+\contentsline {section}{Gaussian Graphical Models}{15}{section*.24}%
+\contentsline {subsection}{Question 9 (3 points)}{16}{section*.25}%
+\contentsline {subsection}{BONUS: Question 10 (1 point)}{17}{section*.27}%
