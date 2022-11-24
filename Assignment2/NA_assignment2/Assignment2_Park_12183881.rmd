@@ -49,7 +49,7 @@ set.seed(123)
 **Are the following statements true or false (0.5 point per statement)? Explain why.**
 
 1. Suppose that nodes n1 and n2 in a GGM are not connected (edge weight = 0). We can thus infer that these nodes are conditionally independent.  
-***TRUE***: Yes, if two nodes are not connected, they are independent *conditional on all other nodes* in the network.
+***TRUE***: Yes, if two nodes are not connected, they are independent *conditional on all other nodes* in the network (Blanken, T.F., Isvoranu, A.M., & Epskamp, S., 2022).
 
 2. Suppose that model A is more complex than model B, and model B is nested in model A. If model A and model B fit the data about equally well, we would prefer model A.  
 ***FALSE***: No, if we have two models fit equally well (performs equall well), then we prefer the simper one (i.e., Occam's razor principle). So we would prefer model *B* not model *A* in this case.
@@ -58,7 +58,7 @@ set.seed(123)
 ***FALSE***: No, they don't lead to the same estimated parameters. Because in pruning, we remove the edges that do not meet the criterion and *re-estimate* the model so that the parameters are estimated based on the final (pruned) model. Contrary to this, in thresholding, the edges that do not meet the criterion are set to zero so that they are not visualized in the network, yet the other non-zero edge weights are *not re-estimated*. Therefore, the parameter estimates would likely to differ.
 
 4. Regularization penalizes the complexity of the parameters in the model.  
-***TRUE***: Yes, the statement is true. With regularization, parameters are estimated by optimizing *penalized* likelihood function, which is based on the complexity of the model parameters.
+***TRUE***: Yes, the statement is true. With regularization, parameters are estimated by optimizing *penalized* likelihood function, which is based on the complexity of the model parameters (Blanken, T.F., Isvoranu, A.M., & Epskamp, S., 2022).
 
 
 5. A stepwise model search algorithm is guaranteed to find a global optimum.  
@@ -189,7 +189,7 @@ newData <- IsingSampler(sampleSize, graph = trueNetwork, thresholds = Thresholds
 ## Question 4 (2 points)
 **Use the data we just sampled to estimate an Ising model, following the same procedures as the authors took in their original paper. Use the `bootnet` package and specify the right "default". In estimating the network, make sure that you take notice of the default values that are set. Plot the resulting network and fix the layout of your estimated network to be the same as in the original network model. Visually compare the two networks to verify whether the networks match one another.**
 
-As shown below in Figure \@ref(fig:isingcompare), the estimated network on the simulated data (right) mostly matches to the original network (left), as majority of the strong edges present in the original network also are observed in the estimated network. Yet, the estimated Ising model is much more sparse than the original network and that is partly due to the regularization that is applied (LASSO regularization based on EBIC with $\gamma$ = 0.25 by default). In addition, there are a couple of edges that are newly introduced or the sign is flipped in the estimated network (i.e., `happy`-`sad`, `sad`-`sleep`), which could be again partly due to regularization process (e.g., after some of the edges are set to zero, the rest of non-zero edge weights are re-estimated and there the differences may come about).***ADD more explanation , book?***
+As shown below in Figure \@ref(fig:isingcompare), the estimated network on the simulated data (right) mostly matches to the original network (left), as the majority of the strong edges present in the original network also are observed in the estimated network. Yet, the estimated Ising model is much more sparse than the original network and that is partly due to the regularization that is applied (LASSO regularization based on EBIC with $\gamma$ = 0.25 by default). In addition, there are a couple of edges that are newly introduced or the sign is flipped in the estimated network (e.g.,, `happy`-`sad`, `sad`-`sleep`, `enjoy`-`effort`), which could be again partly due to regularization process (e.g., after some of the edges are set to zero, the rest of non-zero edge weights are re-estimated and there the differences may come about) (Epskamp, S., & Fried, E. I., 2018).
 
 
 ```{r isingcompare, results='hide', fig.keep='last', fig.width=10, fig.cap="Comparison of Network Models"}
@@ -226,7 +226,7 @@ $$ Strength (i) = \sum_{j=1}^{n}|w_{ij}|$$
 
 If a node ranks high on these metrics of direct centrality, it indicates that it has many direct (strong) relations to other nodes in the network. Accordingly, it implies that the node is relatively more central than the other nodes, which could help inferring the importance of the node in terms of influencing the state of other nodes.
 
-The resulting centrality metrics on the estimated network is shown in Figure \@ref(fig:centrality). Based on the pure *degree*, it can be seen that `happy`, `enjoy`, and `depre` have the highest number of edges (6 edges in total). However, when taking into account for the weights of edges (based on *strength*), `lonely`, `sad`, and `depre` are the most central nodes in this corresponding order. Note that, however, without the knowledge on the accuracy and stability of these centrality estimates, I cannot surely conclude that for example, `lonely` is the most central node in this estimated network. We will actually check the stability of centrality metric in the following section (Question 8).
+The resulting centrality metrics on the estimated network is shown in Figure \@ref(fig:centrality). Based on the pure *degree*, it can be seen that `happy`, `enjoy`, and `depre` have the highest number of edges (6 edges in total). However, when taking into account for the weights of edges (i.e., *node strength*), `lonely`, `sad`, and `depre` are the most central nodes in this corresponding order. Note that, however, without the knowledge on the accuracy and stability of these centrality estimates, I cannot surely conclude that for example, `lonely` is the most central node in this estimated network. We will actually check the stability of centrality metric in the following section (Question 8).
 
 ```{r centrality, fig.keep='last', fig.height=3, fig.cap="Centrality metrics"}
 ## compute the degree
@@ -270,7 +270,7 @@ fn <- sum(trueEdges != 0 & estEdges == 0)
 
 ### 6-1. Compute the sensitivity, the specificity, and the edge weight correlation for the network model you estimated from the simulated data. Which conclusions can you draw from your calculations? (2 points)
 
-As shown in Table \@ref(tab:evalcrit), the *specificity* is relatively high around 0.94, while the *sensitivity* is low as 0.64. This tells us that the estimated network contains very few *false positive* edges and quite many *false negative* edges. It perhaps indicates that the regularization might have been too conservative such that it has put too many edges to zero. In addition, the fairly high *edge weight correlation* of 0.94 implies that the estimated edge weights overall align quite well with the true edge weights. The low *sensitivity* and high *edge weight correlation* together reflect the fact that most of the weak edges are set to zero, yet the important connections are mostly correctly identified. 
+As shown in Table \@ref(tab:evalcrit), the *specificity* is relatively high around 0.94, while the *sensitivity* is low as 0.64. This tells us that the estimated network contains very few *false positive* edges but not many *true positive* edges either. It perhaps indicates that the regularization might have been too conservative such that it has put too many edges to zero. In addition, the fairly high *edge weight correlation* of 0.94 implies that the estimated edge weights overall align quite well with the true edge weights. The low *sensitivity* and high *edge weight correlation* together reflect the fact that most of the weak edges are set to zero, yet the important connections are mostly correctly identified. 
 
 ```{r, results='hide'}
 ## sensitivity
@@ -299,15 +299,14 @@ The red dot indicates the sample values, gray dots are boostrapped mean values, 
 <!-- The y-axis labels have been removed to avoid cluttering. -->
 
 Figure \@ref(fig:bci) shows the resulting bootstrapped CIs (BCIs) around the estimated edge-weights of Ising model. One thing to note is that as these BCIs are obtained from the regularized edge weights, the interpretation of BCIs is limited to only show the variability in parameter estimates (not the typical interpretation of 95% analytic CIs).
-Overall most of the CIs are not too wide, indicating that the stability of edge-weights estimates are decent. However, there is a sign of instability in one of the edges (the one on the top), which shows a much larger BCI. It turns out to be the edge between V6 and V10 and this enormous BCI could be due to the violation of assumptions. The generally not too narrow BCIs imply that we need to be cautious when we interpret the order of the edges in our estimated network. There is a quite a big chunk of edges that are estimated to be zero, but again, since the edges are regularized, we need to keep in mind that all edge estimates are biased towards zero (observing that an edge is not set to zero already indicates that the edge is sufficiently strong to be included in the model).  
+Overall most of the BCIs are not too wide and the sample values do not deviate much from the boostrap mean, indicating that edge-weights are estimated with quite a high certainty. This could be due to the sufficiently high sample size ($n = 1000$). However, there is a sign of instability in one of the edges (the one on the top: the edge between `unfr` and `dislike`), which shows a much larger BCI. This erroneously wide BCI could be due to the violation of assumptions. There is a quite a big chunk of edges that are estimated to be zero, but again, since the edges are regularized, we need to keep in mind that all edge estimates are biased towards zero. That is, observing that an edge is not set to zero already indicates that the edge is sufficiently strong to be included in the model. All in all, it is preferred to be cautious when we interpret the order of the edges in our estimated network, given that some of the BCIs are yet fairly wide, but mostly the edges seem to be estimated with a decent certainty.
 
-Figure \@ref(fig:split0) shows the *split-0* BCIs, where the BCIs are drawn only using the bootstrapped samples of non-zero estimates and coupled with a proportion of times that the parameter was put to zero. Accordingly, it shows how often a parameter was included and the obtained values of parameters separately such that the BCIs are faded when the edges are not often included (also shown in proportion). As expected, if the edges that are consistently not included (faded ones) the *split-0* BCIs tend to be wider, as it is based on only the few times the parameters included as non-zero. The edges that are consistently included have smaller BCIs and compared to the BCIs shown in Figure \@ref(fig:bci), the consistently-included edges have smaller BCIs again as they are based only on the times they were not zero.
+Figure \@ref(fig:split0) shows the *split-0* BCIs, where the BCIs are drawn only using the bootstrapped samples of non-zero estimates and coupled with a proportion of times that the parameter was put to zero. Accordingly, it shows how often an edge was included and the estimated value of edge separately by fading BCIs when the edge was not often included (also shown in proportion; Epskamp et al., 2018). As expected, if the edges are consistently not included (faded ones) the *split-0* BCIs tend to be wider (compared to the one that are consistently included), since they are estimated based on only the few times when the parameters are included as non-zero. In addition, the edges that are consistently included have smaller BCIs compared to the BCIs shown in Figure \@ref(fig:bci), again because they are estimated only when they were actually not zero.
 
-Figure \@ref(fig:diffedge) and Figure \@ref(fig:diffnode) shows the bootstrapped difference tests ($\alpha$ = 0.05) between edge-weights that were non-zero in the estimated network and node strength of the symptoms, respectively. Gray boxes indicate nodes or edges that do not differ significantly from one-another and black boxes represent nodes or edges that do differ significantly from one-another. Colored boxes in the edge-weight plot correspond to the color of the edge in the estimated network (see Figure \@ref(fig:isingcompare)), and white boxes in the centrality plot show the value of node strength. 
+Figure \@ref(fig:diffedge) and Figure \@ref(fig:diffnode) shows the bootstrapped difference tests ($\alpha$ = 0.05) between edge-weights that were non-zero in the estimated network and node strength, respectively. Gray boxes indicate nodes or edges that do not differ significantly from one-another and black boxes represent nodes or edges that do differ significantly from one-another. Colored boxes in the edge-weight plot correspond to the color of the edge in the estimated network (see Figure \@ref(fig:isingcompare)), and white boxes in the centrality plot show the value of node strength. 
 
 From Figure \@ref(fig:diffedge), it can be seen that quite a portion of edges (almost half) are shown to not significantly differ from one another. And Figure \@ref(fig:diffnode) shows that again about a half of node strengths cannot be shown to significantly differ from each other. Note that *no correction* for multiple testing was applied in both plots.
 
-- ***INTERPRETATION***: overlapping sample mean and bootstrapped mean are overlapping --> the sample mean are probably accurate?
 
 ```{r bootstrap, eval=FALSE}
 # run bootstrapping
@@ -344,11 +343,11 @@ my_Theme = theme(
 ```
 
 
-```{r  diffedge, fig.cap = "Bootstrapped difference tests between edge weights", out.width="67%"}
+```{r  diffedge, fig.cap = "Bootstrapped difference tests between edge weights", fig.height=4, fig.width=4}
 ## plot significant differences (alpha = 0.05) of edges
 plot(boots_ising, "edge", plot = "difference", onlyNonZero = TRUE, order = "sample") + My_Theme
 ```
-```{r diffnode, fig.cap = "Bootstrapped difference tests between node strength", out.width="70%"}
+```{r diffnode, fig.cap = "Bootstrapped difference tests between node strength", fig.height=4, fig.width=4}
 ## plot significant differences (alpha = 0.05) of node strength
 plot(boots_ising, statistics = "strength", plot = "difference") + My_Theme
 ```
@@ -359,9 +358,9 @@ plot(boots_ising, statistics = "strength", plot = "difference") + My_Theme
 ## Question 8 (3 points) {#stability}
 **Perform a case-dropping bootstrap to investigate the stability of the centrality metric you choose in Question 5. Generate the stability plot as discussed in the lecture and report the CS-coefficient. Interpret the results of the case-dropping bootstrap.**
 
-Figure \@ref(fig:stabstr) (a) shows that the correlation of node strength over various size of samples. The *line* indicates the mean strength of correlation, and the *area* indicates the range from 2.5th quantile to the 97.5th quantile. As you can see, the mean strength drops slightly but mainly remain stable across different sampled cases. It means that the order of node strength remains more or less the same after re-estimating the network with smaller subsetted cases. The area on the other hand becomes obviously wider as the sampled cases become smaller, which is not surprising as there are higher variabilities with the smaller samples. Figure \@ref(fig:stabstr) (b) shows the node strength of individual nodes across case-dropping bootstrapped sampels. It shows that the strength steadily decreases in most of the nodes as sampled cases become smaller, but the changes are not dramatic but rather stable. All in all, we could conclude that the stability of *node strength* is fine based on the stability plot (Figure \@ref(fig:stabstr)).
+Figure \@ref(fig:stabstr) (a) shows that the correlation of node strength over various size of samples. The *line* indicates the mean strength of correlation, and the *area* indicates the range from 2.5th quantile to the 97.5th quantile. As you can see, the mean strength drops slightly but mainly remain stable across different sampled cases. It means that the order of node strength remains more or less the same after re-estimating the network with smaller subsetted cases. The area on the other hand becomes obviously wider as the sampled cases become smaller, which is not surprising as there are higher variabilities with the smaller samples. Figure \@ref(fig:stabstr) (b) shows the node strength of individual nodes across case-dropping bootstrapped sampels. It shows that the strength steadily decreases in most of the nodes as sampled cases become smaller, but the changes are not too dramatic. All in all, we could conclude that the stability of *node strength* is fine based on the stability plot (Figure \@ref(fig:stabstr)).
 
-The CS-coefficient of node strength is $0.672$, which is above the recommended cut-off $0.5$. Given this, it could be concluded that we can substantively interpret the order of node strength. However, note that the cut-off value of $0.5$ is rather chosen arbitrarily (just based on one simulation study: Epskamp et al., 2018), hence we still need to be careful when we make inference on node strength.
+The CS-coefficient of node strength is $0.672$, which is above the recommended cut-off $0.5$. Given this, it could be concluded that we can substantively interpret the order of node strength. However, note that the cut-off value of $0.5$ is rather chosen arbitrarily (just based on one simulation study: Epskamp et al., 2018), hence we still need to be careful when we try to make inferences on node strength.
 
 ```{r, eval=FALSE}
 ## perform case-dropping bootstrapping
@@ -383,25 +382,25 @@ str_pernode <- plot(boots_casedrop, perNode = TRUE) + labs(title="(b) Strength o
 ggpubr::ggarrange(str_stab, str_pernode, ncol=2)
 ```
 
-```{r cs}
-## Centrality stability coefficient
-corStability(boots_casedrop)
-```
-```{r eval=FALSE}
-## run case-drop bootstrapping
-boots_ising2 <- bootnet(est_net, nBoots = 3000, nCores = 8, type = "case")
+<!-- ```{r cs} -->
+<!-- ## Centrality stability coefficient -->
+<!-- corStability(boots_casedrop) -->
+<!-- ``` -->
+<!-- ```{r eval=FALSE} -->
+<!-- ## run case-drop bootstrapping -->
+<!-- boots_ising2 <- bootnet(est_net, nBoots = 3000, nCores = 8, type = "case") -->
 
-# save results 
-save(est_net, boots_ising2, file="data/Ising_CasedropBootstrap.RData")
-```
+<!-- # save results  -->
+<!-- save(est_net, boots_ising2, file="data/Ising_CasedropBootstrap.RData") -->
+<!-- ``` -->
 
-```{r casedrop}
-# load bootstrapping result
-load("data/Ising_CasedropBootstrap.RData")
+<!-- ```{r casedrop} -->
+<!-- # load bootstrapping result -->
+<!-- load("data/Ising_CasedropBootstrap.RData") -->
 
-## plot the bootstrapped confidence interval
-#plot(boots_ising2, order = "sample", plot = "interval")
-```
+<!-- ## plot the bootstrapped confidence interval -->
+<!-- #plot(boots_ising2, order = "sample", plot = "interval") -->
+<!-- ``` -->
 
 
 
@@ -424,20 +423,11 @@ head(data_dep)
 
 The layout is set the same across the different networks using `AverageLayout` and the `maximum` argument is used to make the edges in the networks comparable.
 
-Overall, there seems to be not much of strong differences in the structure of estimated network models. It could be due to the sufficient sample size (in this case $n = 625$), which make the different methods to converge. 
+Overall, the differences do not seem to be very strong in the structure of estimated network models. But at a glance, it could be seen that the regularization method presents more edges than the other two methods, followed by pruning (number of edges = *regularization > pruning > stepwise*). This difference is somewhat expected, since regularization tends to be less conservative than the other two non-regularized methods and stepwise model search method is relatively more conservative (Isvoranu & Epskamp, 2021).
 
-The regularization method presents relatively more edges than the other two methods, which is as expected, since it tends to be less conservative than the other non-regularized methods (Isvoranu & Epskamp, 2021).
-
----
-When you look at overall structure, there is not really difference
-
-No specific minimum/maximum/cut values have been used. Edge
-weights in the separated network ranged from 0.001 (mood – unfriendly) to 0.320 (lonely –
-separation). Edge weights in the widowed network ranged from 0.002 (sad – getgo) to 0.300
-(lonely – widowed).
+But again, these differences are not that prominent especially when we look at the overall structure in general. However, when we try to look into the particular individual edges, these differences shall matter. And these rather subtle differences could be due to the sufficient sample size (in this case $n = 675$), which make the different methods to converge. 
 
 
-page.125 book (#7) : high sample, the three methods give the same
 
 ```{r comparison, fig.width=9, fig.cap = "Comparison of model search algorithms"}
 ## (1) pruning
@@ -445,8 +435,10 @@ page.125 book (#7) : high sample, the three methods give the same
 # alpha level = 0.05
 # recursive = TRUE (repeat the pruning process)
 prunde_mod <- ggm(data_dep) %>% runmodel %>% 
-  prune(alpha=0.05, adjust = "fdr", recursive = TRUE)
+  prune(alpha=0.05) # adjust = "fdr", recursive = TRUE
 pruned_net <- getmatrix(prunde_mod, "omega")
+
+# thresh_mod <- estimateNetwork(data_dep, default = "pcor", threshold = "sig", alpha = 0.01)
 
 ## (2) regularization
 # tuning = 0.5 by default
@@ -464,9 +456,13 @@ Max <- max(abs(c(getWmat(pruned_net), getWmat(reg_net), getWmat(sw_net))))
 
 # get labels
 labelss <- c("Anhd", "Sad", "Sleep", "Energy", "Appe", "Guilt", "Concen", "Motor", "Suicide") 
-pruned_graph <- qgraph(pruned_net, layout = avelayout, theme = "colorblind", 
-                       title = "Pruning (sig = 0.05)", labels=labelss, vsize=15, title.cex = 1.5, 
+pruned_graph <- qgraph(pruned_net, layout = avelayout, theme = "colorblind",
+                       title = "Pruning (sig = 0.05)", labels=labelss, vsize=15, title.cex = 1.5,
                        maximum=Max, details=T)
+
+# thresh_ned <- plot(thresh_mod, title = "Thresholding", layout=avelayout, vsize=15, labels=labelss, 
+#                   title.cex = 1.5, maximum=Max, details=T)
+
 reg_graph <- plot(reg_net, title = "Regularization", layout=avelayout, vsize=15, labels=labelss, 
                   title.cex = 1.5, maximum=Max, details=T)
 sw_graph <- plot(sw_net, layout = avelayout, title = "Step-wise", vsize=15, labels=labelss,
@@ -480,6 +476,9 @@ sw_graph <- plot(sw_net, layout = avelayout, title = "Step-wise", vsize=15, labe
 ## BONUS: Question 10 (1 point)
 
 **(a) Estimate separate networks for both sexes with your preferred algorithm from above.**
+
+As shown below, I chose to use the regularization method (i.e., EBICglasso) to estimate the networks.
+
 ```{r malefemale, fig.width=9, fig.cap = "Comparison of network models between gender"}
 ## data of male groups
 data_males <- data %>% 
@@ -513,13 +512,13 @@ plot(network_females, layout = L, title = "Females", maximum = Max, labels=label
 
 **b) Use the `NetworkComparisonTest (NCT)` to perform compare the global characteristics of both networks by focusing on (1) the global strength test evaluating the global strength invariance, and (2) the omnibus test evaluating the network structure invariance. What do you conclude about differences between these two samples?**
 
-`NetworkComparisonTest (NCT)` is a permutation based hypothesis test, suited for gaussian and binary data, assesses the difference between two networks based on several invariance measures (network structure invariance, global strength invariance, edge invariance). Network structures are estimated with *l1-regularized partial correlations* (gaussian data) or with l1-regularized logistic regression (eLasso, binary data).
+`NetworkComparisonTest(NCT)` is a permutation based hypothesis test, suited for gaussian and binary data, assesses the difference between two networks based on several invariance measures (network structure invariance, global strength invariance, edge invariance). Network structures are estimated with *l1-regularized partial correlations* (gaussian data) or with l1-regularized logistic regression (eLasso, binary data).
 
 ***Conclusion***:  
 
-(1) The global strength test result is shown below in the *summary* as well as in the left graph in Figure \@ref(fig:nct). The null hypothesis states that the overall level of connectivity is the same across sub-populations. As the resulting p-value is 0.0538 ($p > 0.05$), we don't reject the null hypothesis and conclude that the global strength does not differ significantly in the two sample networks.
+(1) The global strength test result is shown below in the *summary* as well as in the left graph from Figure \@ref(fig:nct). The null hypothesis states that the overall level of connectivity is the same across sub-populations. As the resulting p-value is 0.0538 ($p > 0.05$), we don't reject the null hypothesis and conclude that the global strength does not differ significantly in the two sample networks.
 
-(2) Regarding the network structure, again we can check the *summary* and the right graph in Figure \@ref(fig:nct). The null hypothesis states that all edges are equal. Given that the p-value is 0.2762 ($p > 0.05$), again we don't reject the null hypothesis and conclude that the network structures are not significantly different.  
+(2) Regarding the network structure, again we can check the *summary* and the right graph from Figure \@ref(fig:nct). The null hypothesis states that all edges are equal. Given that the p-value is 0.2762 ($p > 0.05$), again we don't reject the null hypothesis and conclude that the network structures are not significantly different.  
 
 
 
@@ -535,7 +534,7 @@ NCT <- NCT(network_males, network_females, it=10000)
 save(NCT, file="data/nct.RData")
 ```
 
-```{r nct, fig.cap="Reference distributions for network comparison test", fig.height=4}
+```{r nct, fig.cap="Reference distributions for network comparison tests", fig.height=4}
 # load nct results
 load("data/nct.RData")
 # summary of nct results
@@ -548,4 +547,15 @@ plot(NCT, what="strength")
 # network structure invariance test 
 plot(NCT, what="network") 
 ```
+
+# References
+
+Blanken, T. F., Isvoranu, A. M., & Epskamp, S. (2022). Chapter 7. Estimating
+network structures using model selection. In Isvoranu, A. M., Epskamp, S., Waldorp,
+L. J., & Borsboom, D. (Eds.). Network psychometrics with R: A guide for behavioral
+and social scientists. Routledge, Taylor & Francis Group.
+
+Epskamp, S., Borsboom, D. & Fried, E.I. Estimating psychological networks and their accuracy: A tutorial paper. Behav Res 50, 195–212 (2018). https://doi.org/10.3758/s13428-017-0862-1
+
+Epskamp, S., & Fried, E. I. (2018). A tutorial on regularized partial correlation networks. Psychological methods, 23(4), 617–634. https://doi.org/10.1037/met0000167
 
