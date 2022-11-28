@@ -48,7 +48,7 @@ set.seed(123)
 
 **Are the following statements true or false (0.5 point per statement)? Explain why.**
 
-1. Suppose that nodes n1 and n2 in a GGM are not connected (edge weight = 0). We can thus infer that these nodes are conditionally independent.  
+1. Suppose that nodes $n_1$ and $n_2$ in a GGM are not connected (edge weight = 0). We can thus infer that these nodes are conditionally independent.  
 ***TRUE***: Yes, if two nodes are not connected, they are independent *conditional on all other nodes* in the network (Blanken, T.F., Isvoranu, A.M., & Epskamp, S., 2022).
 
 2. Suppose that model A is more complex than model B, and model B is nested in model A. If model A and model B fit the data about equally well, we would prefer model A.  
@@ -226,14 +226,14 @@ $$ Strength (i) = \sum_{j=1}^{n}|w_{ij}|$$
 
 If a node ranks high on these metrics of direct centrality, it indicates that it has many direct (strong) relations to other nodes in the network. Accordingly, it implies that the node is relatively more central than the other nodes, which could help inferring the importance of the node in terms of influencing the state of other nodes.
 
-The resulting centrality metrics on the estimated network is shown in Figure \@ref(fig:centrality). Based on the pure *degree*, it can be seen that `happy`, `enjoy`, and `depre` have the highest number of edges (6 edges in total). However, when taking into account for the weights of edges (i.e., *node strength*), `lonely`, `sad`, and `depre` are the most central nodes in this corresponding order. Note that, however, without the knowledge on the accuracy and stability of these centrality estimates, I cannot surely conclude that for example, `lonely` is the most central node in this estimated network. We will actually check the stability of centrality metric in the following section (Question 8).
+The resulting centrality metrics on the estimated network is shown in Figure \@ref(fig:centrality). Based on the pure *degree*, it can be seen that `happy`, `enjoy`, and `depre` have the highest number of edges (6 edges in total). However, when taking into account for the weights of edges (i.e., *node strength*), `lonely`, `sad`, and `depre` are the most central nodes in this corresponding order. Note that, however, without the knowledge on the accuracy and stability of these centrality estimates, we cannot surely conclude that for example, `lonely` is the most central node in this estimated network. We will actually check the stability of centrality metric in the following section (Question 8).
 
 ```{r centrality, fig.keep='last', fig.height=3, fig.cap="Centrality metrics"}
 ## compute the degree
 degree <- apply(est_net$graph, 2, function(x) sum(x != 0)) %>% 
   as.data.frame() %>% 
   rename("degree" = ".") %>% 
-  mutate(vars = est_net$labels, title= "degree") %>% 
+  mutate(vars = est_net$labels, title= "Degree") %>% 
   ggplot(aes(x=reorder(vars, degree), y = degree)) + 
   geom_col(width=.07) + geom_point()+
   coord_flip() + theme_bw() + 
