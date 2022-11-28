@@ -7,12 +7,12 @@
 \contentsline {subsection}{Question 4 (2 points)}{5}{section*.8}%
 \contentsline {section}{Network Inference}{6}{section*.10}%
 \contentsline {subsection}{Question 5 (2 points)}{6}{section*.11}%
-\contentsline {section}{Accuracy and stability (conceptual)}{8}{section*.13}%
-\contentsline {subsection}{Question 6 (3 points)}{8}{section*.14}%
+\contentsline {section}{Accuracy and stability (conceptual)}{7}{section*.13}%
+\contentsline {subsection}{Question 6 (3 points)}{7}{section*.14}%
 \contentsline {subsubsection}{6-1. Compute the sensitivity, the specificity, and the edge weight correlation for the network model you estimated from the simulated data. Which conclusions can you draw from your calculations? (2 points)}{8}{section*.15}%
 \contentsline {subsubsection}{6-2. As we have also discussed during the lecture, there is a trade-off between the sensitivity, specificity, and the estimation parameters that we have set. What do you expect to happen to the sensitivity and specificity when you would lower the tuning hyper parameter? (1 points)}{8}{section*.16}%
-\contentsline {subsection}{Question 7 (2 points)}{9}{section*.17}%
-\contentsline {subsection}{Question 8 (3 points)}{14}{section*.22}%
+\contentsline {subsection}{Question 7 (2 points)}{8}{section*.17}%
+\contentsline {subsection}{Question 8 (3 points)}{13}{section*.22}%
 \contentsline {section}{Gaussian Graphical Models}{14}{section*.24}%
 \contentsline {subsection}{Question 9 (3 points)}{15}{section*.25}%
 \contentsline {subsection}{BONUS: Question 10 (1 point)}{16}{section*.27}%
