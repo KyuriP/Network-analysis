@@ -11,13 +11,7 @@ urlcolor: blue
 geometry: margin = 2cm
 linestretch: 1.1
 highlight: tango
-header-includes:
-  - \usepackage{wrapfig, cancel, amsmath, multicol, caption}
 ---
-
-<!-- function for conditional independence -->
-\newcommand{\bigCI}{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}}
-\newcommand{\nbigCI}{\cancel{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}}}
 
 ```{r setup, include=FALSE}
 options(warn = -1) 
@@ -229,7 +223,7 @@ $$ Strength (i) = \sum_{j=1}^{n}|w_{ij}|$$
 If a node ranks high on *degree*, it indicates that it has many direct relations to other nodes in the network, and correspondingly we can infer that it is an important node as it can influence many other nodes. If a node ranks high on *node strength*, it indicates that it has many direct *strong* relations to other nodes in the network. Accordingly, it implies that the node is relatively more central in terms of influencing the states of other nodes, and hence it is critical in deciding the overall structure of the network (Deserno et al., 2022).
 
 
-The resulting centrality metrics on the estimated network is shown in Figure \@ref(fig:centrality). Based on the pure *degree*, it can be seen that `happy`, `enjoy`, and `depre` are deemed important as they have the highest number of edges (6 edges in total). However, when taking into account for the weights of edges (i.e., *node strength*), `lonely`, `sad`, and `depre` are the most central nodes, given that their strength values are the highest (around 5, 4, and 3, respectively; they are raw values, not standardized). Whereas, the least central nodes are `sleep` and `appet`, which have around 0.7 and 1.7 of node strength. These strength centrality in general matches well with the estimated network structure in Figure \@ref(fig:isingcompare).
+The resulting centrality metrics on the estimated network is shown in Figure \@ref(fig:centrality). Based on the pure *degree*, it can be seen that `happy`, `enjoy`, and `depre` are deemed important as they have the highest number of edges (6 edges in total). However, when taking into account for the weights of edges (i.e., *node strength*), `lonely`, `sad`, and `depre` are the most central nodes, given that their strength values are the highest (around 5, 4, and 3, respectively; they are raw values, not standardized). Whereas, the least central nodes are `sleep` and `appet`, which have around 0.7 and 1.7 of node strength. We could interpret that the symptoms of being lonely, sad, and depressed play a key role in the network as they have strong connections to the other symptom nodes. On the other hand, poor sleep and appetite have relatively less influences on the others and accordingly play a less central role in the network.
 
 Note that, however, without the knowledge on the accuracy and stability of these centrality estimates, we cannot surely conclude that for example, `lonely` is the most central node in this estimated network. We will actually check the stability of centrality metric in the following section (*Question 8*).
 
