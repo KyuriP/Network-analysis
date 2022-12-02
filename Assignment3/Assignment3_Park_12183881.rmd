@@ -28,6 +28,7 @@ library("graphicalVAR")
 library("psychonetrics")
 library("dplyr")
 library("qgraph")
+library(purrr)
 
 # set the seed for reproducibility
 set.seed(123)
@@ -59,7 +60,7 @@ Suppose a therapist measures a patient about 75 times on a set of depression sym
 
 2. It could be the case that the data is missing completely on "suicidal thought". For example, the patient felt pressure or some sorts of discomfort to answer the question on "suicidal thought" and left the question always unanswered. Then, the item would have only *NAs*, which would likely to result in no variation on that item.
 
-3. Lastly, another potential scenario is that the measurement period was too short to capture the variance in "suicidal thought". For example, the 75 times of measurement was performed every 2 hrs in a day over 2 weeks or so, which is quite a short period of time. It could be that the patient only started having "suicidal thought" after the measurement period and hence left the item score on "suicidal thought" constant.
+3. Lastly, another potential scenario is that the measurement period was too short to capture the occurrence in "suicidal thought". For example, the 75 times of measurement was performed every 2 hrs in a day over 2 weeks or so, which is quite a short period of time. It could be that the patient only started having "suicidal thought" after the measurement period ends and hence left the item score on "suicidal thought" constant.
 
 
 
@@ -67,8 +68,11 @@ Suppose a therapist measures a patient about 75 times on a set of depression sym
 ## Question 3 (1 point)
 **Give an example of a relationship that can only be studied at the *between-person* level.**  
 
-Things that can only be studied at the *between-person* level have to be something that stay stable and do not change over time (i.e., no deviations / fluctuations over time). One example relationship that can be studied only in *between-person* level is: the relationship between the education level and different races. (place of birth, sex at birth, gene?..., nationality).
+Things that can only be studied at the *between-person* level have to be something that stay stable and do not change over time (i.e., no deviations / fluctuations over time). One example relationship that can be studied only in *between-person* level is: the relationship between the education level and different races. Another example could be the difference in personality trait between people with different zodiac sign.
 
+(place of birth, sex at birth, gene?..., nationality).
+
+According to Denny, (Isvorano: child abuse study can only be done in between level)
 Child abuse .. cannot really stuided within-person level, as it does not make sense
 bereavement . partner dies. 
 blood type 
@@ -87,15 +91,26 @@ Hence, basing the network model only on the symptoms without incorporating the r
 
 
 ## Question 5 (2 points)
-In a recent study by Haslbeck et al., (preprint) it was shown that use of a VAS or Likert scale has an affect on the observed distributions. Take a look at their article. Give (a) a short summary of the problem described in their paper, (b) reflect on this problem (e.g., why is this an issue and how does it affect the interpretation of our results?) and (c) think of a study to specifically test whether this phenomenon (different scales lead to different distributions) is a methodological artifact or a "true" phenomenon (max 250 words).
+**In a recent study by Haslbeck et al., (preprint) it was shown that use of a VAS or Likert scale has an affect on the observed distributions. Take a look at their article. Give (a) a short summary of the problem described in their paper, (b) reflect on this problem (e.g., why is this an issue and how does it affect the interpretation of our results?) and (c) think of a study to specifically test whether this phenomenon (different scales lead to different distributions) is a methodological artifact or a "true" phenomenon (max 250 words).**
 
 
+
+Haselbeck et al.(preprint) assessed the distributional modality and skewness in emotional measurements using seven different emotion ESM datasets and investigated whether there are any patterns of the distributional forms on the level of items, individuals, and measurement designs. They found that skewed unimodal distributions as well as multimodality are highly prevalent across the datasets. In addition, the presence of multimodality was found to be strongly associated with the measurement designs such that multimodality was more prevalent in VAS (visual analog scale) than in the Likert scales (e.g., 1 – 5, or 1 – 7) and some other association on the time level such as negative emotions exhibit higher skewness than position emotions.
+
+This has a great implication on multiple aspects. First, with regard to theorizing emotion dynamics, if the found multimodality and high skewness is indeed true dynamics of emotion, then it implies that perhaps a person experiences emotions such that going through multiple states (intensity) instead of experiencing it one typical intensity all the time (i.e., unimodal). Additionally, if we presume the multimodality, then the following measurement design should preferably include a broader scale (e.g., VAS with 0 – 100 scale) rather than such a limited Likert scale of 1 – 5 so that it can capture the variabilities across multiple peaks. Lastly, the VAR model might not be deemed appropriate if the true underlying dynamic follows a skewed/multimodal distribution as VAR model assumes a single equilibrium state that is drawn from a normal distribution. Accordingly, a VAR model will fit poorly on the skewed or multimodally-distributed time-series emotion data, and interpretating its parameters would be misleading. 
+
+However, it is difficult to reason whether the found result actually reflects the true emotion dynamics or it is just some sorts of methodological artifacts (e.g., specific measurement design induce multimodality). In order to test this, we could design a study such that participants are asked to report on each item with different measurement scales. For example, a participant reports each item twice, once with VAS and once with Likert scale at every occasion and in the end we can compare the distribution of items to see if they approximate to each other or not. If the distributions of item based on VAS and Likert-scale are similar, then we can be more confident in presuming that the found multimodality and skewness do reflect the true phenomenon.
 
 
 
 ## Question 6 (1 point)
-What do the *day* and *beep* arguments in the packages `graphicalVAR`, `psychonetrics`, and `mlVAR` do? Suppose you have a dataset containing only one observation per day for every weekday (but not weekends) in a year long study. Which argument would you use (and why) to make sure that measures from Mondays are not regressed on measures from Fridays?
+**What do the *day* and *beep* arguments in the packages `graphicalVAR`, `psychonetrics`, and `mlVAR` do? Suppose you have a dataset containing only one observation per day for every weekday (but not weekends) in a year long study. Which argument would you use (and why) to make sure that measures from Mondays are not regressed on measures from Fridays?**
 
+- `dayvar` argument indicates assessment day and when you add this, it ensures that the first measurement of a day is not regressed on the last measurement of the previous day (it removes pairs of observations that cross a night). So it would be only sensible to add this argument when you have multiple observations per day.
+
+- `beepvar` argument indicates the assessment beep per day, and when you add this, it will treat the non-consecutive beeps as missing (removes pairs of observations that are not consecutive).
+
+- In this case, we want to regress measures of each weekdays on measures of the previous days but there is a break between Mondays and Fridays. We can then use `dayvar` argument and specify the same number to each week (e.g., Monday - Friday of week 1: `dayvar = 1` and Monday - Friday of week 2: `dayvar = 2`, ...) then the measures from Mondays are not going to be regressed on the measures from Fridays of the previous week.
 
 
 # Practical Questions
@@ -106,6 +121,7 @@ load("clean_network.RData")
 
 # Variables to investigate:
 vars <- paste0("Q",1:18)
+
 # Labels:
 varLabs <- c("Relax","Irritable","Worry","Nervous","Future","Anhedonia",
 "Tired","Hungry","Alone","Angry","Social_offline","Social_online",
@@ -124,11 +140,18 @@ varLabs <- varLabs[!varLabs %in% c("Hungry","Angry","Music","Procrastinate")]
 # N =1 time series
 
 ```{r}
-student_number <- 12183881 # Enter student number here
+student_number <- 12183881
 set.seed(student_number)
 subject <- sample(Data2$id, 1)
 my_data <- Data2[which(Data2$id == subject),]
 ```
+
+
+I chose 4 variables: *"Irritable", "Worry", "Nervous", "Alone"*.
+```{r}
+chosen_var <- c("Irritable", "Worry", "Nervous", "Alone")
+```
+
 
 ## Question 7 (1.5 points)
 Estimate a *saturated* (no model selection) GVAR model on your sampled subject using the 3 or 4 variables you chose above using `psychonetrics`. Plot the estimated temporal (partial directed correlations) and contemporaneous networks with the same layout (1 point). Which edges are significant (0.5 point)?
@@ -140,9 +163,58 @@ Tips:
 - The psychonetrics package models temporal effects using a matrix called beta, but also returns a standardized form back called PDC (partial directed correlations). Note that the PDC matrix is the standardized transpose of the beta matrix, allowing it to be plotted as a directed network. The significance of parameters in the beta matrix corresponds to the significance of parameters in the PDC matrix.
 
 
-## Question 8 (1 point)
-Estimate a GVAR model on your sampled subject using the 3 or 4 variables you chose above using the graphicalVAR package (use $\gamma$ = 0), and compare your results to the results of the previous question.
+```{r}
+res1 <- gvar(my_data, vars = chosen_var, dayvar = "day", beepvar = "beep") %>% runmodel
 
+# temporal network
+temporal1 <- getmatrix(res1, "PDC") # PDC = Partial Directed Correlations
+# contemporaneous network
+contemporaneous1 <- getmatrix(res1, "omega_zeta")
+
+# get average layout
+L1 <- averageLayout(temporal1, contemporaneous1)
+
+# Labels:
+labs <- chosen_var
+
+# plot networks
+layout(t(1:2))
+qgraph(temporal1, layout = L1, theme = "colorblind", directed=TRUE, diag=TRUE,
+       title = "Temporal", vsize = 12, mar = rep(6,4), asize = 5,
+       labels = labs)
+qgraph(contemporaneous1, layout = L1, theme = "colorblind", 
+       title = "Contemporaneous", vsize = 12, mar = rep(6,4), asize = 5,
+       labels = labs)
+```
+
+Assuming that $\alpha = 0.05$, 
+- the significant edge in the temporal network is: `Nervous <- Alone`.
+- the significant edges in the contemporaneous network are: `Nervous -- Irritable`, `Alone--Irritable`, `Nervous--Worry`, and `Alone -- Worry`.
+
+```{r}
+# get parameters
+res1 %>% parameters()
+
+# sig_pars <- res1 %>% parameters() %>%  
+#   filter(par >= 19, par <=40) %>% 
+#   select(var1, op,var2, est, se, p) %>% 
+#   filter(p < 0.05)
+# sig_pars
+```
+
+
+## Question 8 (1 point)
+**Estimate a GVAR model on your sampled subject using the 3 or 4 variables you chose above using the graphicalVAR package (use $\gamma$ = 0), and compare your results to the results of the previous question.**
+
+It is more sparse, because the network is estimated with LASSO using BIC ($\gamma$ = 0).
+```{r, results='hide'}
+# run graphicalVAR
+res2 <- graphicalVAR(my_data, vars = chosen_var, gamma = 0, dayvar = "day", beepvar = "beep")
+
+# Plot results:
+#layout(t(1:2))
+plot(res2, include = c("PCC", "PDC"), titles = TRUE, sameLayout = TRUE, theme = "colorblind")
+```
 
 
 ## Question 9 (1.5 points)
@@ -165,37 +237,159 @@ Test for significant trends ($\alpha$ = 0.05) for your selected variables and de
 
 *Note*: if the participant you picked did not show any significant trends for the variables you picked, either pick a different participant or pick new variables that do show a significant trend.
 
+```{r}
+# run lms on chosen variables
+lms <- chosen_var %>% 
+  paste(., '~ conc') %>% 
+  map(as.formula) %>% 
+  map(lm, data=my_data) 
+names(lms) <- chosen_var
+
+# get the summary
+lapply(lms, summary)
+```
+
+Since we found significant effects in `Worry` ($p < 0.05$) and `Nervous` ($p < 0.01$), we can detrend the variables as below.
+```{r}
+my_data$Worry[!is.na(my_data$Worry)] <- residuals(lms$Worry)
+my_data$Nervous[!is.na(my_data$Nervous)] <- residuals(lms$Nervous)
+```
+
+Re-estimated networks after detrending are shown below.
+The ones estimated with `psychonetrics::gvar()` barely show any changes.
+And the ones estimated with `grahicalVAR()` shows a change, that is an additional edge between `Alone - Irritable` in the contemporaneous network. But all in all, there is barely any changes observed.
+
+```{r, results='hide'}
+## after detrending, run psychonetrics gvar:
+res3 <- gvar(my_data, vars = chosen_var) %>% runmodel
+# temporal network
+temporal3 <- getmatrix(res1, "PDC") 
+# contemporaneous network
+contemporaneous3 <- getmatrix(res1, "omega_zeta")
+
+# get average layout
+L3 <- averageLayout(temporal3, contemporaneous3)
+
+# plot networks
+layout(t(1:2))
+qgraph(temporal3, layout = L3, theme = "colorblind", directed=TRUE, diag=TRUE,
+       title = "Temporal", vsize = 12, mar = rep(6,4), asize = 5,
+       labels = labs)
+qgraph(contemporaneous3, layout = L3, theme = "colorblind", 
+       title = "Contemporaneous", vsize = 12, mar = rep(6,4), asize = 5,
+       labels = labs)
+
+## after detrending, run graphicalVAR:
+res4 <- graphicalVAR(my_data, vars = chosen_var, gamma = 0)
+
+# Plot results:
+#layout(t(1:2))
+plot(res4, include = c("PCC", "PDC"), titles = TRUE, sameLayout = TRUE, theme = "colorblind")
+```
+
+
 
 ## Question 10 (1 point)
-For question 8 you estimated a graphical VAR network containing 3 or 4 variables for a sampled subject using the `graphicalVAR` package. Repeat this process for another subject, i.e., estimate an additional graphical VAR network containing the same 3 or 4 variables as before for another subject (for example, use the student number of a friend). Note here that you are not required to detrend the data prior to estimating the network structures. Now that you have estimated two graphical VAR models on non-detrended data, plot the resulting networks and inspect the similarities and differences between these estimated graphical VAR networks. Can you conclude there is heterogeneity between these two people? Why (not)?
+**For question 8 you estimated a graphical VAR network containing 3 or 4 variables for a sampled subject using the `graphicalVAR` package. Repeat this process for another subject, i.e., estimate an additional graphical VAR network containing the same 3 or 4 variables as before for another subject (for example, use the student number of a friend). Note here that you are not required to detrend the data prior to estimating the network structures. Now that you have estimated two graphical VAR models on non-detrended data, plot the resulting networks and inspect the similarities and differences between these estimated graphical VAR networks. Can you conclude there is heterogeneity between these two people? Why (not)?**
+
+Just at a glance, it seems two people are different as the estimated networks look different. However, we cannot really conclude that there is heterogeneity based on visually comparing the network structures, because we cannot ensure the these estimated GVAR models are reliable. It could be that they are just random noises, then we would compare a set of random noises to another set of random noises. According to @hoekstra_heterogeneity_2022, even when the generating structure is the same, it is likely that we would find different network structures. Hence, it is not advisable to interpret the differences between individual network models as an evidence for heterogeneity, especially when the networks are sparse as in this case!
+```{r, results='hide', cache=TRUE}
+## another seed
+set.seed(13294889)
+subject2 <- sample(Data2$id, 1)
+my_data2 <- Data2[which(Data2$id == subject2),]
+
+# run graphicalVAR
+res5 <- graphicalVAR(my_data2, vars = chosen_var, gamma = 0)
+
+# Plot results:
+### LAYOUT the same fix!
+par(mfrow=c(2,1))
+plot(res2, include = c("PCC", "PDC"), titles = TRUE, sameLayout = TRUE, theme = "colorblind", main = "person id=68")
+plot(res5, include = c("PCC", "PDC"), titles = TRUE, sameLayout = TRUE, theme = "colorblind", main = "person id=33")
+```
+
 
 
 # N > 1 time-series
 
 ## Question 11 (1 point)
-Look at the help file for the `mlVAR` function and estimate a multilevel GVAR model on the entire dataset on 4 to 6 variables of your choice.
+**Look at the help file for the `mlVAR` function and estimate a multilevel GVAR model on the entire dataset on 4 to 6 variables of your choice.**
+
+
+```{r cache=TRUE, results='hide'}
+## choose 5 variables
+chosen_var2 <- c("Irritable", "Worry", "Nervous", "Alone", "C19_worry")
+## estimate mlGVAR model
+mlVAR_res <- mlVAR(Data2, vars = chosen_var2, idvar = "id" , beepvar = "beep", dayvar="day", contemporaneous = "correlated", temporal = "correlated")
+
+```
+
 
 ## Question 12 (1 point)
 
-Look at the mlVAR plot method help file (`?plot.mlVAR`), and plot the estimated fixed-effect temporal, contemporaneous and between-subjects networks. Plot all networks with the same layout (circle layout or average layout), and hide (threshold) edges that are not significant at $\alpha$ = 0.05. For the contemporaneous and between-subjects networks, use an "and"-rule to minimize type-1 error rate in showing edges.
+**Look at the mlVAR plot method help file (`?plot.mlVAR`), and plot the estimated fixed-effect temporal, contemporaneous and between-subjects networks. Plot all networks with the same layout (circle layout or average layout), and hide (threshold) edges that are not significant at $\alpha$ = 0.05. For the contemporaneous and between-subjects networks, use an "and"-rule to minimize type-1 error rate in showing edges.**
+
+```{r cache=TRUE}
+# Get networks:
+# cont <- getNet(mlVAR_res, "contemporaneous", nonsig = "hide", rule = "and")
+# bet  <- getNet(mlVAR_res, "between", nonsig = "hide", rule = "and")
+# temp <- getNet(mlVAR_res, "temporal", nonsig = "hide")
+
+# average layout
+L <- averageLayout(cont,bet,temp)
+
+par(mfrow=c(1,3))
+plot(mlVAR_res, "temporal", title="(a) Temporal (Lag-1)", layout = L, nonsig = "hide", rule = "and", theme='colorblind', vsize = 16, asize = 5, mar = rep(7,4), title.cex = 1.3)
+
+plot(mlVAR_res, "contemporaneous", title="(b) Contemporaneous", layout = L, nonsig = "hide", rule = "and", theme='colorblind', vsize = 16,  asize = 5, mar = rep(7,4), title.cex = 1.3)
+
+plot(mlVAR_res, "between", title="(c) Between-subjects", layout = L, nonsig = "hide", theme='colorblind', vsize = 16, asize = 5, mar = rep(7,4), title.cex = 1.3)
+
+```
 
 
 ## Question 13 (2 points)
 
-Plot the estimated individual differences for both the temporal and the contemporaneous network. Explain what the edges in these networks represent. Inspect the plotted networks, what conclusion can you draw about heterogeneity within this sample based on these network structures?
+**Plot the estimated individual differences for both the temporal and the contemporaneous network. Explain what the edges in these networks represent. Inspect the plotted networks, what conclusion can you draw about heterogeneity within this sample based on these network structures?**
 
-Tip: Take a look at Bringmann et al., (2013)
+Figure \@ref(fig:inddif) shows the estimated networks of the individual differences, where the edges represent the standard deviation of random effects in the temporal and in the contemporaneous network, respectively.  
+In the temporal network, the `minimum` argument is set to 0.07, meaning that only the standard deviation of temporal random effects above 0.07 are shown with a non-transparent arrow, following the advice of @bringmann_network_2013. We can see that in Figure \@ref(fig:inddif) (a), the largest individual differences are found in the auto-regressions, given that the self-loops of `Alone`, and `C19-worry` are pronounced. It implies that there is a high individual variability over those items such that for some individuals, once they feel alone they tend to feel lonely for long time, but for the other individuals, it is rather momentary). Among the cross-lagged regressions, `Nervous -> Irritable` turns out to have relatively larger individual differences. 
+
+When looking at the contemporaneous network in in Figure \@ref(fig:inddif) (b), the largest individual differences are found again in the relationship between `Nervous` and `Irritable`, followed by the relationship between `Nervous` and `Worry`. 
+
+All in all, we can conclude that there is some amount of individual heterogeneity observed in our data. In general, auto-regressions have relatively larger individual differences compared to cross-lagged regressions and the relation between `Nervous` and `Irritable` seems to vary a lot across individuals, considering that it is pronounced in both temporal and contemporaneous networks.
+
+```{r inddif, fig.cap="Individual differences networks"}
+## checked with summary result
+summary(mlVAR_res)
+
+layout(t(1:2))
+## temporal: random effects SD
+temp_ran_sd <- mlVAR_res[["results"]][["Beta"]][["SD"]] # mlVAR_res$results$Beta$SD
+tem_inddif <- cbind(rep(1:5,each=5), rep(1:5,5), weight=as.vector(temp_ran_sd))
+qgraph(tem_inddif, layout = L, labels = chosen_var2, theme='colorblind', vsize = 12, asize = 4, mar = rep(7,4), title = "(a) Temporal", minimum = 0.07) # we set the minimum 0.07 to make the network a bit sparse
+
+## contemporaneous: random effects SD
+contemp_ran_sd <- mlVAR_res[["results"]][["Theta"]][["pcor"]][["SD"]]
+qgraph(contemp_ran_sd, layout = L, labels = chosen_var2, theme='colorblind', vsize = 12, asize = 4, mar = rep(7,4), title = "(b) Contemporaneous")
+
+```
 
 
 
 # Essay Question
 
 ## Question 14 (2 points)
+**Inspect these network measures and choose one that would be interesting to compute on one of the estimated networks from any of the previous questions. Report your chosen measure and what it represents for the network you have chosen, explain your choice, and what research question it could answer in the form of a short essay (max 250 words).** 
 
-Let’s revisit centrality measures: As we already explored in previous assignments, `qgraph` implements a number of centrality measures for networks. In addition, the Brain Connectivity Toolbox (see https://sites.google.com/site/bctnet/home) contains measures to inspect complex network structures. Inspect these network measures and choose one that would be interesting to compute on one of the estimated networks from any of the previous questions. Report your chosen measure and what it
-represents for the network you have chosen, explain your choice, and what research question it could answer in the form of a short essay (max 250 words). 
+1. Choose one metric and network
+2. Report the chosen maesure and explain what it represents for the network
+3. explain my chocie
+4. What RQ it can answer?
 
-Note: you do not need to compute the metric as not all of the centrality measures are also implemented into R (you are of course free to compute the measure nonetheless!).
+
+
 
 
 
