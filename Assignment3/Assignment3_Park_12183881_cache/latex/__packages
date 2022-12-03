@@ -4,3 +4,5 @@ psychonetrics
 dplyr
 qgraph
 purrr
+ggplot2
+ggpubr
