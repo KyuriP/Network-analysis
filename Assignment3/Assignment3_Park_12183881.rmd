@@ -438,6 +438,24 @@ ggarrange(p1, p2)
 ```{r ref.label="fullsummaryresults"}
 ```
 
+<!-- ## Stability of centrality measure -->
+<!-- ```{r} -->
+<!-- library(bootnet) -->
+<!-- # Estimate model: -->
+<!-- gvar <- estimateNetwork( -->
+<!--   Data2, default = "graphicalVAR", vars = chosen_var2, -->
+<!--   tuning = 0, idvar = "id", dayvar = "day", beepvar = "beep", nLambda = 8 -->
+<!-- ) -->
+
+<!-- Layout <- qgraph::averageLayout(gvar$graph$temporal,  -->
+<!--                                 gvar$graph$contemporaneous) -->
+<!-- layout(t(1:2)) -->
+<!-- plot(gvar, graph = "temporal", layout = Layout,  -->
+<!--      title = "Temporal") -->
+<!-- plot(gvar, graph = "contemporaneous", layout = Layout,  -->
+<!--      title = "Contemporaneous") -->
+<!-- ``` -->
+
 
 Individaul differences manually figured out
 ```{r}
@@ -453,6 +471,7 @@ Individaul differences manually figured out
 # contemp_ran_sd <- mlVAR_res[["results"]][["Theta"]][["pcor"]][["SD"]]
 # qgraph(contemp_ran_sd, layout = L, labels = chosen_var2, theme='colorblind', vsize = 12, asize = 4, mar = rep(7,4), title = "(b) Contemporaneous", details=T)
 ```
+
 
 \newpage
 # References
