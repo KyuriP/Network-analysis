@@ -458,6 +458,7 @@ ggarrange(p1, p2)
 
 
 Individaul differences manually figured out
+## how much variance is three in your estimated --> Individual network
 ```{r}
 # ## checked with summary result
 # summary(mlVAR_res)
