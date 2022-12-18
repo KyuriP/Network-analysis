@@ -1,35 +1,35 @@
+## ============================================================================
+## It contains one function `semiequiv_dcg`.
+##
+## Purpose: It computes all directed cyclic graph (DCGs) in an equivalence class
+## based on a PAG estimated by CCD algorithm.
+##
+## (Note: we've tested this function and it has performed well so far.
+## But we are not 100% sure that we've indeed covered all possible cases.
+## We are currently working on testing it more thoroughly).
+## ============================================================================
 
 
-#' Search for equivalent class of CDGs
-#' @param ccdobj the resulting object of ccdKP()
-#' @param pag the resulting object of CreateAdjMat()
+#' Search for equivalent class of DCGs
+#' @param ccdobj the resulting object of ccdKP function
+#' @param pag the resulting object of CreateAdjMat function
 #'
-#' @return list of equivlanet class of DCGs
-semiequiv_cdg2 <- function(ccdobj, pag, verbose = FALSE)
+#' @return list of equivalent class of DCGs
+semiequiv_dcg <- function(ccdobj, pag, verbose = FALSE)
   {
-  ## Purpose: Compute the equivalence class of DCGs based on PAG from CCD
-  ## ----------------------------------------------------------------------
-  ## Arguments:
-  ## - ccdobj: object from ccdKP()
-  ## - pag: object from CreateAdjMat()
-  ## ----------------------------------------------------------------------
-  ## Value:
-  ## list of Markov-equivalent class of DCGs
-  ## ----------------------------------------------------------------------
-
-  # possible cdg matrix starting with fully-connected:
-  cdgset <- ifelse(pag==0, 0, 1)
-  num_node <- ncol(cdgset)
+  # possible dcg matrix starting with fully-connected:
+  dcgset <- ifelse(pag==0, 0, 1)
+  num_node <- ncol(dcgset)
   ## STEP 1) first removing graph that doesn't satisfy ancestral relationships
   equivset <- list() # storage for the set
   # size of target vector
-  trg_vec <- sum(cdgset!=0)
+  trg_vec <- sum(dcgset!=0)
   # if there are more than 1 target vector
   if(trg_vec != 0 && trg_vec > 1){
     # all possible vectors from permutation
     possible_vec <- gtools::permutations(2, trg_vec, v = 0:1, repeats.allowed = T)
     for (j in 1:nrow(possible_vec)){
-      tmp <- cdgset # copy in tmp
+      tmp <- dcgset # copy in tmp
       tmp[which(tmp!=0)] <- possible_vec[j,]
       checktruefalse <- c()
       for(i in seq_len(num_node)){
@@ -54,8 +54,8 @@ semiequiv_cdg2 <- function(ccdobj, pag, verbose = FALSE)
   if(trg_vec == 1){
     # possible vectors
     tmp[which(tmp!=0)] <- 0
+    # do the same checks as before
     checktruefalse <- c()
-
     for(k in seq_len(num_node)){
       checktruefalse[i] <- (all(searchAM_KP(pag, i, type="an") %in% possAn(tmp, i, type="cpdag")) &&
                               all(possAn(tmp, i, type="cpdag") %in% searchAM_KP(pag, i, type="ant")))
@@ -81,6 +81,7 @@ semiequiv_cdg2 <- function(ccdobj, pag, verbose = FALSE)
     vars <- ccdobj$nodes
     removelist <- list()
     for(e in 1:nrow(solidline)){
+      # extract first, second, third nodes in the triple
       fn <- solidline[e,]$fistnode
       mn <- solidline[e,]$middlenode
       ln <- solidline[e,]$lastnode
@@ -96,12 +97,14 @@ semiequiv_cdg2 <- function(ccdobj, pag, verbose = FALSE)
         ln_an <- possAn(equivgraph, ind_ln, type="pdag")
           # if mn is ancestor of either of them
           if (!(mn %in% names(equivgraph[,fn]) | mn %in% names(equivgraph[,ln]) )){
+            # then record the index
             ancestorno[q] <- q
           }
         removelist[[e]] <- ancestorno
       }
     }
     if(length(removelist)!= 0){
+    # remove the DCGs that are in the removelist
     removelist <- na.omit(unique(unlist(removelist)))
     equivset <- equivset[-removelist]
     }
@@ -117,6 +120,7 @@ semiequiv_cdg2 <- function(ccdobj, pag, verbose = FALSE)
     vars <- ccdobj$nodes
     removelist <- list()
     for(w in 1:nrow(dotted)){
+      # extract first, second, third nodes in the triple
       fn <- dotted[w,]$fistnode
       mn <- dotted[w,]$middlenode
       ln <- dotted[w,]$lastnode
@@ -146,6 +150,7 @@ semiequiv_cdg2 <- function(ccdobj, pag, verbose = FALSE)
         removelist[[w]] <- descendtyesno
       }
     }
+    # remove the DCGs that are in the removelist
     removelist <- na.omit(unique(unlist(removelist)))
     equivset <- equivset[-removelist]
   }
@@ -194,8 +199,10 @@ semiequiv_cdg2 <- function(ccdobj, pag, verbose = FALSE)
   return(equivset)
 }
 
-############
-## TO-DOs ##
-############
+
+
+######################
+## TO-DOs in future ##
+######################
 # - using "cpdag" or "pdag" when searching ancestors/descendants... --> think of the implications!!
-# - p-adjacency preserved in all CDGs... is it sufficient to check only circle-circle edges. think about it again. (the intuition is when there is no circle, and the endpoints are definitely specified, the ancestor information seem to be sufficient to obtain the equivalence class. But when the circle occurs, suddenly the ancestor information becomes much less informative).
+# - p-adjacency preserved in all DCGs... is it sufficient to check only circle-circle edges. think about it again. (the intuition is when there is no circle, and the endpoints are definitely specified, the ancestor information seem to be sufficient to obtain the equivalence class. But when the circle occurs, suddenly the ancestor information becomes much less informative).

@@ -1,0 +1,24 @@
+
+## Network Analysis Individual Report
+__________________________________________________________
+
+## AUTHOR: KYURI PARK (student number: 12183881)
+## This README provides the description of "CriticalReflection_Park_12183881.zip" file.
+__________________________________________________________
+
+## CONTENTS
+
+- DATA folder: all saved equivalence class of DCGs from each simulated model (.Rdata) and an example empirical data `McNally.csv`.
+
+- CODE folder: three R scripts containing code for creating figures in the report and the `R` folder contains all necessary functions to run the overall analyses.
+
+- IMG folder: all img files used in the report.
+
+- REPORT file: `CriticalReflection_Park_12183881.pdf` (source file: `CriticalReflection_Park_12183881.rmd`).
+
+- `references.bib`: BibTex for references.
+
+- `apa.csl`: csl file to format the references per APA guidelines.
+
+- `README_KP`: description on the zip file.
+__________________________________________________________

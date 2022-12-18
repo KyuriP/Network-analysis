@@ -1,27 +1,9 @@
 ---
-# title: "**Comparison of GGM and Cyclic Causal Model**"
-# subtitle: "Network Analysis 2022"
-# author: "Kyuri Park, 12183881"
-# institution: "University of Amsterdam"
-# date: "`r format(Sys.time(), '%B %d, %Y')`"
-# output:
-#   bookdown::pdf_document2:
-#     latex_engine: xelatex
-#     number_sections: false
-# link-citations: true
-# urlcolor: blue
-# #geometry: margin = 2cm
-# linestretch: 1.1
-# highlight: tango
-# bibliography: references.bib
-# csl: "apa.csl"
-
 output:
   bookdown::pdf_document2:
     number_sections: true
     highlight: tango
     toc: false
-    keep_tex: true
 bibliography: references.bib
 csl: "apa.csl"
 link-citations: yes
@@ -66,9 +48,9 @@ source("code/R/searchAM_KP_fnc.R")
 source("code/R/equivset_fnc.R")
 source("code/R/data_generating_fnc.R")
 source("code/R/eval_metric_fnc.R")
+source("code/R/variation_fnc.R")
 ```
 
-<!-- start frontpage -->
 \pagenumbering{gobble}
 
 \includegraphics[width=0.7cm]{img/logouva.png}
@@ -77,7 +59,7 @@ source("code/R/eval_metric_fnc.R")
 \begin{centering}
 \vspace{1cm}
 \LARGE
-{\bf Reflection on Comparison of GGM and Directed Cyclic Graph Model}
+{\bf Critical Reflection on Comparison of GGM and Directed Cyclic Graph Model}
 
 \vspace{0.5cm}
 \Large
@@ -94,10 +76,8 @@ December 22, 2022 \\
 \vspace{1cm}
 
 \end{centering}
-<!-- end frontpage -->
 
 \pagenumbering{arabic}
-<!-- \newgeometry{left=3cm, right=3cm, top=3cm, bottom=3cm} -->
 \normalsize
 
 \vspace{1cm}

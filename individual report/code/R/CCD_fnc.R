@@ -1,3 +1,16 @@
+## ============================================================================
+## It contains five function: `ccdKP`, `loadContinuousData`, `loadDiscreteData`,
+## `extractTetradNodes`, `extractTetradEdges`.
+## The main function is `ccdKP`, which runs the CCD algorithm,
+## and it is dependent on the other four functions.
+##
+## Purpose: It runs CCD algorithm.
+##
+## Note: This is a wrapper function for ccd algorithm in the Tetrad software.
+## Please check Tetrad for more detailed information
+## on CCD function (https://sites.google.com/view/tetradcausal).
+## ============================================================================
+
 ## ====================
 ## preparation
 ## ====================
@@ -5,23 +18,36 @@
 # install.packages("rJava")
 # install.packages("devtools")
 # install.packages("DOT")
-#install_github("bd2kccd/r-causal")
+# install_github("bd2kccd/r-causal")
 library(rJava)
 library(usethis)
 library(devtools)
 library(rcausal)
-
 library(DOT)
-library(qgraph)
 library(pcalg)
 
 
 
-############################################################
 ccdKP <- function (df, dataType = "continuous", numCategoriesToDiscretize = 4,
                   depth = 3, alpha = 0.05, numBootstrap = -1, ensembleMethod = "Highest",
                   java.parameters = NULL, priorKnowledge = NULL)
 {
+  ## ----------------------------------------------------------------------
+  ## Arguments:
+  ## - df: data
+  ## - dataType: data type either continuous or discrete
+  ## - numCategoriesToDiscretize: number of categories when wanting to discretize
+  ## - depth: search depth (default = 3)
+  ## - alpha: alpha value for conditional independence test
+  ## - numBootstrap: number of bootstrapping performed (default = -1 : no bootstrap)
+  ## - ensembleMethod: type of ensemble method to use
+  ## - java.parameters: when specify tetrad java parameters
+  ## - priorKnowledge: when incorporate additional knowledge
+
+  ## ----------------------------------------------------------------------
+  ## Value:
+  ## ccd model object
+  ## ----------------------------------------------------------------------
   params <- list(NULL)
   if (!is.null(java.parameters)) {
     options(java.parameters = java.parameters)
@@ -135,6 +161,7 @@ ccdKP <- function (df, dataType = "continuous", numCategoriesToDiscretize = 4,
   return(ccd)
 }
 
+
 ############################################################
 loadContinuousData <- function(df){
   node_names <- colnames(df)
@@ -192,12 +219,14 @@ loadDiscreteData <- function(df){
   boxData <- .jcast(boxData, "edu/cmu/tetrad/data/DataSet")
   return(boxData)
 }
+
 ############################################################
 extractTetradNodes <- function(resultGraph){
   nods <- resultGraph$getNodes()
   V <- sapply(as.list(nods), with, toString())
   return(V)
 }
+
 ############################################################
 extractTetradEdges <- function(resultGraph){
   eds <- resultGraph$getEdges()

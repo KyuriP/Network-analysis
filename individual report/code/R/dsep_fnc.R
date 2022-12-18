@@ -1,6 +1,13 @@
+## ============================================================================
+## It contains one function `dsep_KP`.
+##
+## Purpose: It tests if the set a and the set b are d-separated given the set S.
+## This function is used when finding all equivalence class of DCGs
+## in `semiequiv_cdg2` function from `equivset_fnc.R`.
+## ============================================================================
+
 dsep_KP <- function(a,b, S = NULL, graph)
 {
-  ## Purpose: Are the set a and the set b d-separeted given the set S?
   ## ----------------------------------------------------------------------
   ## Arguments:
   ## - a,b,S: vectors of node names
@@ -12,19 +19,17 @@ dsep_KP <- function(a,b, S = NULL, graph)
 
   amatTmp <- graph ## i->j if amatTmp[j,i]!=0
   amatTmp[amatTmp != 0] <- 1
+  ## create a graphNEL object
   g <- as(t(amatTmp), "graphNEL")
-  #if (max(amatTmp+t(amatTmp)) > 1) stop("dsep: Undirected edge in input graph!")
   p <- numNodes(g)
 
   ## build node union of a,b,S
-  #if(is.null(john.pairs)) john.pairs <- RBGL::johnson.all.pairs.sp(g)
   nodeUnion <- if(length(S) > 0) c(a,b,S) else c(a,b)
-  my.nodes <- nodes(g) # check the nodes (colnames suffice?)
+  my.nodes <- nodes(g) # check the nodes
 
-  ## find ancestor graph of nodeUnion
+  ## find ancestor graph of node union
   anc.set <- NULL
   for (i in seq_len(p)) {
-    #desc.nodes <- my.nodes[which(john.pairs[i,] < Inf)]
     desc.nodes <- my.nodes[possDe(m = amatTmp, x = i, possible = TRUE, ds = FALSE, type = "pdag") ]
     if (any(desc.nodes %in% nodeUnion)) anc.set <- c(anc.set, my.nodes[i])
   } ## for (i in 1:p)

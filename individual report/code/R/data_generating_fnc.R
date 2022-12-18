@@ -1,11 +1,24 @@
+## ============================================================================
+## It contains two functions: `equilibrium_check` and `gen_dat`.
+##
+## Purpose: It checks if the specified regression matrix (B) reaches
+## an equilibrium state, which is necessary for a cyclic model to converge.
+## Then, it generates the data according to the B matrix.
+## ============================================================================
 
 #' Check equilibrium state
 #'
 #' @param B the square regression matrix
 #'
-#'
+#' @return print out message whether equilibrium is met.
 equilibrium_check <- function(B){
-  if(all(abs(Re(eigen(B)$values)) < 1)) print("Equilibirum state has been reached.")
+  # if the absolute values of all eigen values of B are smaller than 1,
+  # then it reaches an equilibrium state
+  if(all(abs(Re(eigen(B)$values)) < 1)){
+    print("Equilibirum state has been reached.")
+  } else {
+    print("Equilibirum state has NOT been reached.")
+  }
 }
 
 

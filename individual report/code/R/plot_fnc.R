@@ -1,4 +1,15 @@
+## ============================================================================
+## It contains four functions:
+## `CreateAdjMat`, `extracttriples`, `extractnode`, and `plotPAG`.
+##
+## Purpose: It plots the PAG using the ccd object from ccd_KP function.
+## `plotPAG` is the main function that plots a PAG and
+## it is dependent on the other three functions.
+## ============================================================================
+
+## load necessary package
 library(Rgraphviz)
+
 
 #' Create adjacency matrix
 #'
@@ -10,21 +21,24 @@ library(Rgraphviz)
 #'
 #' @return an adjacency matrix of PAG
 CreateAdjMat <- function(ccd.obj, p){
+  # extract the edge list
   ccd.edges <- ccd.obj$edges
+  # storage matrix
   mat <- matrix(0, p, p, dimnames = list(ccd.obj$nodes, ccd.obj$nodes))
 
-  # for now, I assume that the names of nodes are number....
+  # for now, I assume the names of nodes are number.
   for (i in 1:length(ccd.edges)){
-
     nodes <- unlist(stringr::str_split(ccd.edges[i], " "))
     row <- nodes[1]
     column <- nodes[3]
+    # extract the edge type
     row_edgetype <- substr(nodes[2], 1, 1)
     column_edgetype <- substr(nodes[2], 3, 3)
-
+    # fill the matrix
     mat[row, column] <- column_edgetype
     mat[column, row] <- row_edgetype
   }
+  # encode each type with the corresponding number
   mat[mat=="o"] <- 1
   mat[mat==">"|mat=="<"] <- 2
   mat[mat=="-"] <- 3
@@ -35,20 +49,43 @@ CreateAdjMat <- function(ccd.obj, p){
 }
 
 
-#' Extract nodes
+#' Extract triples
+#'
+#' @param triples the triples in PAG from a ccd object
+#'
+#' @return the first, middle, last node in each triple
+extracttriples <- function(triples) {
+  # extract all triples from ccd object
+  triplesets <- unlist(stringr::str_extract_all(triples, "(?<=\\<).+?(?=\\>)"))
+  # separate each triple
+  triplesets <- stringr::str_split(triplesets, ",")
+  # extract first node
+  firstnode <- stringr::str_trim(sapply(triplesets, function(x) x[[1]]))
+  # extract second node
+  middlenode <- stringr::str_trim(sapply(triplesets, function(x) x[[2]]))
+  # extract third node
+  lastnode <- stringr::str_trim(sapply(triplesets, function(x) x[[3]]))
+  return(data.frame(fistnode = firstnode, middlenode= middlenode, lastnode=lastnode))
+}
+
+
+#' Extract middle node in a triple
 #'
 #' @param triples the triples in PAG
 #'
 #' @return the middle node in the triples
-#'
 extractnode <- function(triples) {
-  triplesets <- unlist(stringr::str_extract_all(triples,  "(?<=\\<).+?(?=\\>)"))
+  # extract all triples from ccd object
+  triplesets <- unlist(stringr::str_extract_all(triples, "(?<=\\<).+?(?=\\>)"))
+  # separate each triple
   triplesets <- stringr::str_split(triplesets, ",")
+  # extract only the middle node
   middlenode <- stringr::str_trim(sapply(triplesets, function(x) x[[2]]))
   return(middlenode)
 }
-#'
-#'
+
+
+
 #' #' Extract dotted-underlined triplet nodes
 #' #'
 #' #' @param triples the triples in PAG
@@ -65,22 +102,6 @@ extractnode <- function(triples) {
 #' }
 
 
-#' Extract triples
-#'
-#' @param triples the triples in PAG from ccdobj
-#'
-#' @return the first,middle,laste node in the triples
-#'
-extracttriples <- function(triples) {
-  triplesets <- unlist(stringr::str_extract_all(triples,  "(?<=\\<).+?(?=\\>)"))
-  triplesets <- stringr::str_split(triplesets, ",")
-  firstnode <- stringr::str_trim(sapply(triplesets, function(x) x[[1]]))
-  middlenode <- stringr::str_trim(sapply(triplesets, function(x) x[[2]]))
-  lastnode <- stringr::str_trim(sapply(triplesets, function(x) x[[3]]))
-  return(data.frame(fistnode = firstnode, middlenode= middlenode, lastnode=lastnode))
-}
-
-
 #' Plot PAG (partial ancestral graph)
 #'
 #' @param amat the adjacency matrix of PAG
@@ -90,7 +111,6 @@ extracttriples <- function(triples) {
 #' "0": no edge; "1": circle; "2": arrow; "3": tail
 #'
 #' @return a PAG graph of graphNEL class
-#'
 plotPAG <- function(ccd.obj, amat)
 {
   # get the underline triples
@@ -101,13 +121,16 @@ plotPAG <- function(ccd.obj, amat)
   underline_node <- extractnode(underline)
   # get  dotted-underline node
   dottedunderline_node <- extractnode(dottedunderline)
-
+  # convert it to a graphNEL object
   g <- as(amat, "graphNEL")
+  # extract node info
   nn <- nodes(g)
   p <- numNodes(g)
+  # extract edge info
   n.edges <- numEdges(g)
   ah.list <- at.list <- vector("list", n.edges)
   l.names <- character(n.edges)
+  # assign a shape for each edge type
   amat[amat == 1] <- "odot"
   amat[amat == 2] <- "vee"
   amat[amat == 3] <- "none"
@@ -125,12 +148,13 @@ plotPAG <- function(ccd.obj, amat)
     }
   }
   names(ah.list) <- names(at.list) <- l.names
-
+  # create a graph object
   graph <- layoutGraph(g) # layoutType="neato"
+  # for the solid underlines, color them in blue
   fill <- rep("lightblue", length(underline_node))
   names(fill) <- underline_node
   nodeRenderInfo(graph) <- list(fill = fill)
-
+  # for the dotted underlines, make the outlines dashed
   lty <- rep(2, length(dottedunderline_node))
   names(lty) <- dottedunderline_node
   nodeRenderInfo(graph) <- list(lty = lty)
@@ -138,59 +162,9 @@ plotPAG <- function(ccd.obj, amat)
   edgeRenderInfo(graph) <- list(arrowhead = ah.list, arrowtail = at.list)
   # global features
   graph.par(list(nodes=list(cex = 1)))
+  # plot the pag
   pag <- Rgraphviz::renderGraph(graph)
+  # also show the underlining information
   cat(paste("Dotted-underlined triples:", dottedunderline, "\nUnderlined triples:", underline, "\n"))
   return(pag)
 }
-
-
-
-# ## ==========================
-# ## Examples
-# ## ==========================
-# mat4 <- CreateAdjMat(ccd_4p, 4)
-# plotPAG(ccd_4p, mat4)
-#
-# mat6 <- CreateAdjMat(ccd_6p, 6)
-# plotPAG(ccd_6p, mat6)
-#
-# mat_mcnally <- CreateAdjMat(ccd_mcnally, p = 26)
-# plotPAG(ccd_mcnally, mat_mcnally)
-
-
-
-
-## =======================================
-## plotAG function (edited slightly)
-## =======================================
-
-plotAG_KP <- function(amat)
-{
-  g <- as(amat,"graphNEL")
-  nn <- nodes(g)
-  p <- numNodes(g)
-  n.edges <- numEdges(g)
-  ah.list <- at.list <- vector("list", n.edges)
-  l.names <- character(n.edges)
-  amat[amat == 1] <- "odot"
-  amat[amat == 2] <- "vee"
-  amat[amat == 3] <- "none"
-  iE <- 0
-  for (i in 1:(p-1)) {
-    x <- nn[i]
-    for (j in (i+1):p) {
-      y <- nn[j]
-      if (amat[x,y] != 0) {
-        iE <- iE + 1
-        ah.list[[iE]] <- amat[x,y]
-        at.list[[iE]] <- amat[y,x]
-        l.names[[iE]] <- paste0(x,"~",y)
-      }
-    }
-  }
-  names(ah.list) <- names(at.list) <- l.names
-
-  edgeRenderInfo(g) <- list(arrowhead = ah.list, arrowtail = at.list)
-  Rgraphviz::renderGraph(Rgraphviz::layoutGraph(g))
-}
-
