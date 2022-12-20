@@ -6,9 +6,9 @@
 ## THIS README PROVIDES THE DESCRIPTION ON THE STRUCTURE OF "CriticalReflection_Park_12183881.zip" FILE.
 ===============================================================================
 
-## ============================================================================
+===============================================================================
 ## CONTENTS
-## ============================================================================
+===============================================================================
 The folder structure is as follows:
 
 ```
@@ -47,11 +47,11 @@ The folder structure is as follows:
 │   └── logouva.png
 └── references.bib
 ```
-## ============================================================================
+===============================================================================
 ## REPORT
 - `CriticalReflection_Park_12183881.pdf` is the main report file.
 - `CriticalReflection_Park_12183881.Rmd` renders the report.
-## ============================================================================
+===============================================================================
 ## CODE
 - `code` folder contains all the code used to create the report.
 - Three R scripts containing the code for creating figures in the report.
@@ -59,22 +59,22 @@ The folder structure is as follows:
   - `variation_DCG.R`: code to create the density plots (Figure 2) and degree centrality plots (Figure 3) in the report.
   - `empircal_example.R`: code to create the PAG (Figure 4) and GGM (Figure 5) on empirical data.
 - `R` folder contains all necessary functions to run all the analysis for the report.
-## ============================================================================
+===============================================================================
 ## DATA
 - All equivalence classes of DCGs from each simulated model saved in `.Rdata`.
 - One example empirical data `McNally.csv`.
-## ============================================================================
+===============================================================================
 ## INCIDENTALS
 - `img`: img folder contains all necessary image files to render the report.
 - `references.bib`: BibTex for references cited in the report.
 - `apa.csl`: csl file to format the references as per APA guidelines.
 - `README_KP`: current file describing the content of the zip file.
-## ============================================================================
+===============================================================================
 ## RECOMMENDATION
 1. Open the `Individual_report.Rproj`.
 2. Find the `CriticalReflection_Park_12183881.pdf` report file.
 3. Check the `code` folder for any code used to perform the analysis presented in the report.
 
 In case of any questions, please contact Kyuri Park (kyuri.park@student.uva.nl).
-## ============================================================================
+===============================================================================
 
