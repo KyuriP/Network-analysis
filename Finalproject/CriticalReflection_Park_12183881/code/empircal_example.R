@@ -1,7 +1,10 @@
+
 ## =============================================================================
 ## Description
-
-# This script concerns applying CCD to emprical data from McNally et al. (2017).
+#
+# This script concerns applying CCD to empirical data from McNally et al. (2017)
+# in order to test the practical applicability of CCD.
+#
 # The data is obtained from : https://www.cambridge.org/core/journals/psychological-medicine/article/abs/comorbid-obsessivecompulsive-disorder-and-depression-a-bayesian-network-approach/DAA4E2352A9E26809A4EAE35C366E900#supplementary-materials
 
 # It contains the code to create Figure 4 and Figure 5 in the report.
@@ -9,6 +12,11 @@
 # Figure 5: GGM on depression symptoms using GLASSO.
 ## =============================================================================
 
+
+
+## =======================================
+## 1. Preparation
+## =======================================
 ## load necessary packages
 library(qgraph)
 library(pcalg)
@@ -29,6 +37,9 @@ depression <- mcnally[,1:16]
 ocd <- mcnally[,17:26]
 
 
+## =======================================
+## 2. Estimate GGM with GLASSO (Figure 5)
+## =======================================
 ## estimate GGM via graphical LASSO on depression symptoms
 cordep <- cor(depression)
 # found the optimal sparsity by gamma = 1
@@ -37,7 +48,10 @@ qgraph(glassoFitdep, layout = "spring", theme="colorblind",
        nodeNames = colnames(depression), legend.cex = 0.4)
 
 
-## estimate PAG on depression symptoms by running CCD
+## =======================================
+## 3. Estimate PAG using CCD (Figure 4)
+## =======================================
+## estimate the PAG on depression symptoms by running CCD
 # run CCD
 ccd_mcnally_dep <- ccdKP(df=depression, dataType = "discrete", depth = -1)
 # create an adjacency matrix for PAG

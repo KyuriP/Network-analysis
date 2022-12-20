@@ -1,0 +1,64 @@
+===============================================================================
+## README FILE FOR FINAL ASSIGNMENT_INDIVIDUAL REPORT
+## COURSE: NETWORK ANALYSIS 2022
+## AUTHOR: KYURI PARK
+## THIS README PROVIDES THE DESCRIPTION ON THE STRUCTURE OF "CriticalReflection_Park_12183881.zip" FILE.
+===============================================================================
+
+
+## CONTENTS
+
+```
+├── CriticalReflection_Park_12183881.Rmd
+├── CriticalReflection_Park_12183881.pdf
+├── Individual_report.Rproj
+├── README_KP
+├── apa.csl
+├── code
+│   ├── R
+│   │   ├── CCD_fnc.R
+│   │   ├── data_generating_fnc.R
+│   │   ├── dsep_fnc.R
+│   │   ├── equivset_fnc.R
+│   │   ├── eval_metric_fnc.R
+│   │   ├── plot_fnc.R
+│   │   ├── searchAM_KP_fnc.R
+│   │   └── variation_fnc.R
+│   ├── empircal_example.R
+│   ├── simulation.R
+│   └── variation_DCG.R
+├── data
+│   ├── McNally.csv
+│   ├── equiv4p.RData
+│   ├── equiv4pL2.RData
+│   ├── equiv4pL3.RData
+│   ├── equiv4p_high.RData
+│   ├── equiv5p.RData
+│   ├── equiv5p_high.RData
+│   ├── equiv6p.RData
+│   └── equiv6p_high.RData
+├── img
+│   ├── CCDsummary.png
+│   ├── deg_variation.pdf
+│   ├── density_variation.pdf
+│   └── logouva.png
+├── readme.md
+└── references.bib
+```
+
+
+
+- DATA folder: all saved equivalence class of DCGs from each simulated model (.Rdata) and an example empirical data `McNally.csv`.
+
+- CODE folder: three R scripts containing code for creating figures in the report and the `R` folder contains all necessary functions to run the overall analyses.
+
+- IMG folder: all img files used in the report.
+
+- REPORT file: `CriticalReflection_Park_12183881.pdf` (source file: `CriticalReflection_Park_12183881.rmd`).
+
+- `references.bib`: BibTex for references.
+
+- `apa.csl`: csl file to format the references per APA guidelines.
+
+- `README_KP`: description on the zip file.
+__________________________________________________________

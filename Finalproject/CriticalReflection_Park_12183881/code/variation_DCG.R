@@ -1,12 +1,23 @@
 
 ## =============================================================================
 ## Description
-
+#
 # This script contains the code to create the Figure 2 and Figure 3 in the report.
-# Figure 2: distribution of densities per each set of DCGs.
-# Figure 3: average degree per node with 95% confidence inerval.
+# Figure 2: Distribution of densities per each set of DCGs.
+# Figure 3: Average degree for every node per each set of DCGs with 95% confidence interval.
 ## =============================================================================
 
+
+## =============================================================================
+#
+## Preparation
+#
+## =============================================================================
+## load necessary packages
+library(qgraph)
+library(pcalg)
+library(dplyr)
+library(ggplot2)
 
 ## source all the functions
 source("code/R/variation_fnc.R")
@@ -21,11 +32,16 @@ load("data/equiv6p.RData")
 load("data/equiv6p_high.RData")
 
 
-## =========================
-## overall density variation
-## =========================
+## =============================================================================
+## Examine overall density variation (Figure 2)
+#
+# 1. Compute the density for DCGs.
+# 2. Compute the density for true models.
+# 3. Plot the distribution of densities of DCGs
+#    and add a line for true density as well as for average DCG density.
+## =============================================================================
 
-## density for DCGs per model
+## 1) compute the density for DCGs per model
 # 4 node-sparse
 denvar4p <-DCGdensities(equiv4p)
 # 4 node-dense
@@ -42,11 +58,11 @@ denvar6phigh <-DCGdensities(equiv6p_high)
 modeldensities <- list(denvar4p, denvar4phigh, denvar5p, denvar5phigh, denvar6p, denvar6phigh)
 names(modeldensities) <- c("(a) 4 nodes - sparse", "(b) 4 nodes - dense", "(c) 5 nodes - sparse", "(d) 5 nodes - dense", "(e) 6 nodes - sparse", "(f) 6 nodes - dense")
 
-## compute the true model densities
+## 2) compute the true model densities
 truemodels <- list(B4, B4_high, B5, B5_high, B6, B6_high) %>%
   purrr::map(~truemoddensity(.)) %>% unlist()
 
-## plot the distributions of density per model
+## 3) plot the distributions of density per model
 # specify bin numbers
 bins <- c(15, 15, 15, 15, 20, 20)
 # storage for plots
@@ -81,13 +97,19 @@ ggpubr::ggarrange(plotlist=plotlist1, nrow=3, ncol=2, common.legend = T, legend 
 
 
 
-## ===========================
-## degree centrality variation
-## ===========================
+## =============================================================================
+## Examine degree centrality variation (Figure 3)
+#
+# 1. Compute the degree for all nodes in DCGs.
+# 2. Compute the standard errors (SE) per model.
+# 3. Plot the average degree centrality with the 95% confidence interval.
+## =============================================================================
 
-## obtain degrees per node for all DCGs
+## 1) obtain degrees per node
+## 2) and compute the SE  for all DCGs
 # 4 node-sparse
 degvar4p <- DCGdegrees(equiv4p) %>%
+  # compute SE
   mutate(se = deg_sd * qnorm(0.975) / length(equiv4p), name = "(a) 4 nodes - sparse")
 # 4 node-dense
 degvar4phigh <- DCGdegrees(equiv4p_high) %>%
@@ -107,6 +129,7 @@ degvar6phigh <- DCGdegrees(equiv6p_high) %>%
 # put all degrees per model together in a list
 modeldegrees <- list(degvar4p, degvar4phigh, degvar5p, degvar5phigh, degvar6p, degvar6phigh)
 
+## 3) create the degree centrality plots for each model with 95% confidence interval
 # storage for plots
 plotlist2 <- modeldegrees %>%
   purrr::map(~

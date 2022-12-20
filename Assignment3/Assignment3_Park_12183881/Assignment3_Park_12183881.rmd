@@ -1,0 +1,493 @@
+---
+title: "Assignment 3 - Network Analysis 2022"
+author: "Kyuri Park, 12183881"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  bookdown::pdf_document2:
+    latex_engine: xelatex
+    number_sections: false
+link-citations: true
+urlcolor: blue
+geometry: margin = 2cm
+linestretch: 1.1
+highlight: tango
+bibliography: networkass3.bib
+csl: "apa.csl"
+---
+
+```{r setup, include=FALSE}
+options(warn = -1) 
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      comment = NA,
+                      fig.align = "center")
+# load libraries
+library("mlVAR")
+library("graphicalVAR")
+library("psychonetrics")
+library("dplyr")
+library("qgraph")
+library(purrr)
+library(ggpubr)
+library(ggplot2)
+
+
+# set the seed for reproducibility
+set.seed(123)
+```
+
+\newpage
+
+# Conceptual Questions
+
+## Question 1 (1 point)
+**Are the following statements true or false? Explain why (0.5 point per statement).**
+
+**1. If ergodicity holds, results from between-person analysis are expected to equal results from within-person analysis.**
+
+> Yes, if ergodicity holds, there should be no difference between individuals (i.e., no difference in between-person), and correspondingly it aligns with the within-person analysis of every individual [@molenaar2004manifesto].
+
+**2. It is generally recommended to always remove trends (such as linear trends) prior to analyzing your N = 1 time series.**
+
+> No, even though a simulation study shows that detrending helps with increasing the performance of estimated networks [@epskamp2018personalized], it is often the case that these changing trends are of main interest. In addition, if the existing trend is not linear, there is a risk that we might induce trends instead [@ria2022]. Hence, detrending needs to be performed with caution, and it is not correct to say it is *always* recommended to detrend [@isvoranu2022network].
+
+
+## Question 2 (1.5 points)
+
+**List three potential reasons why the node "suicidal thought" may be disconnected in the resulting network.**
+
+1. Probably the patient answered "*no*" every time on "suicidal thought, since it is quite an extreme symptom to develop. It is likely that the patient never had suicidal thought and that leads to no variance on that item, which will result in no connections in either of temporal or contemporaneous network [@ria2022].
+
+2. It could be the case that the estimated network model was quite large (> 10 nodes) while not having enough observations ($n = 75$ in this case 
+, which is not large). This will result in lack of power, and hence failed to retrieve the edges connecting to "suicidal thought". It is in fact not established whether GVAR model can be reliably estimated from the N = 1 data sets [@isvoranu2022network], especially when the model is large and sample size is relatively small, like in this case ($n = 75$). 
+
+3. Or it might be the case that the data is missing a lot on "suicidal thought". For example, the patient felt pressure or some sorts of discomfort to answer the question on "suicidal thought" and left the question  unanswered most of the time. Then, the item would have a lot of missing values, which would likely to result in empty temporal/contemporaneous network.
+
+4. Another potential scenario is that the measurement period was too short to capture the occurrence of "suicidal thought". For example, the 75 observations were measured by 5 times per day over 2 weeks, which is relatively a short period of time. It could be that "suicidal thought" only started occurring after the measurement period had ended, and hence left the item score on "suicidal thought" constant.  
+
+5. Lastly, there could have been a mismatch between the chosen time scale and "suicidal thought" processes, such that suicidal thought process is much slower than the chosen measurement frequency. It could be that the therapist measured the symptoms every 1-2 hrs, when the suicidal thought process operates over several days or so, which require more distance between assessments [@isvoranu2022network]. This could result in barely any variations on "suicidal thought" item and correspondingly leads to empty temporal and contemporaneous network.
+
+
+
+
+## Question 3 (1 point)
+**Give an example of a relationship that can only be studied at the *between-person* level.**  
+
+Things that can only be studied at the *between-person* level have to be something that stay stable and do not fluctuate over time. A couple of example relationships that can be studied only in *between-person* level are:
+
+- *genetic structure* and *cancer* : do people with a certain genetic structure have higher risk for cancer?
+
+- *personality trait* and *zodiac sign*: do people with different zodiac signs have different personality traits?
+
+- *average education level* and *race/nationality*: does the average education level differ across different races/nationalities?
+
+
+<!-- (place of birth, sex at birth, blood type, etc.). -->
+
+<!-- According to Denny, (Isvorano: child abuse study can only be done in between level) -->
+<!-- Child abuse .. cannot really studided within-person level, as it does not make sense -->
+<!-- bereavement .  -->
+
+
+## Question 4 (2 points)
+**During the lecture we discussed multiple challenges regarding time-series modeling in the network approach. Pick your favorite challenge and explain this challenge in your own words. Make sure to not only explain what the challenge is, but also why this is a challenge: in what way may this challenge impact your results (i.e., the network model you estimate) and how may this jeopardize your conclusions?**
+
+One of the challenges in time-series network modelling is the difficulty of incorporating variables that operate on different time-scales. For example, the symptom network (e.g., network consist of symptoms) evolves relatively fast, as symptoms generally fluctuate over days. Whereas, protective factors, such as psychological resilience, evolve rather slowly and gradually [@lunansky_personality_2020]. Obviously, resilience is part of the dynamic of psychopathology, but there exists no such model that can incorporate variables operating on the different time-scales. Absence of such a model prevents us from analyzing the whole network that integrates the slow-changing variables (e.g., resilience) with the fast-changing symptoms. Note that @lunansky_personality_2020 looked into the interaction between slow and fast network processes but it was studied in such a way that they looked at the influence of the slow changing variables on how the symptom network evolved, instead of incorporating them all in one network model.
+
+According to @dennythesis2021, not being able to properly account for the relevant factors that operate on slower time-scale from the symptom network could lead to a much denser network. The reasoning is as follows. If the slow-changing variable (SV) is omitted in the symptom network model (due to not showing sufficient variance over the relatively short measurement period), then the edges will be estimated without controlling for the SV. Assuming that the SV has consistent influences on the symptoms, not incorporating the SV is likely to exaggerate the edges (i.e., partial correlations) between the symptoms. Therefore, it is expected that the symptom network model excluding the SV would appear denser (i.e., many thicker edges) than the integrated network model including the SV. 
+
+Hence, basing the network model only on the symptoms without incorporating the relevant SVs can result in misleading model that overestimates the strength of relationships between symptoms. This could be especially detrimental to studies that look into a particular connection between two symptoms. If a SV that has a considerable influence on the symptom dynamics is not included in the model, the researcher may draw a conclusion based on one of the spurious connections in the network, which are resulted from overlooking the effects of the SV.^[***Note***. Reference list can be found at the end of the document.]
+
+
+
+## Question 5 (2 points)
+**In a recent study by Haslbeck et al., (preprint) it was shown that use of a VAS or Likert scale has an affect on the observed distributions. Take a look at their article. Give (a) a short summary of the problem described in their paper, (b) reflect on this problem (e.g., why is this an issue and how does it affect the interpretation of our results?) and (c) think of a study to specifically test whether this phenomenon (different scales lead to different distributions) is a methodological artifact or a "true" phenomenon (max 250 words).**
+
+(a)  
+Haselbeck et al. assessed the distributional modality and skewness in emotional measurements using seven different emotion ESM datasets and investigated whether there are any patterns of the distributional forms on the level of items, individuals, and measurement designs. They found that skewed unimodal distributions as well as multimodality are highly prevalent across the datasets and the presence of multimodality was found to be strongly associated with the measurement designs such that multimodality was more prevalent in VAS (visual analog scale) than in the Likert scales (e.g., 1 – 5, or 1 – 7). In addition, they found some other associations on the item level such as negative emotions exhibit higher skewness than position emotions.
+
+(b)  
+This has a great implication on multiple aspects. First, with regard to theorizing emotion dynamics, if the found multimodality and high skewness is indeed true dynamics of emotion, then it implies that a person experiences emotions by going through multiple states (intensity) instead of experiencing it in one typical intensity all the time (i.e., unimodal). Additionally, if we presume the multimodality, then the measurement design should preferably include a broader scale (e.g., VAS with 0 – 100 scale) rather than a limited scale such as Likert scale of 1 – 5, so that it can capture the variabilities across multiple peaks. Lastly, the VAR model might not be deemed appropriate if the true underlying dynamic follows a skewed/multimodal distribution as the VAR model assumes a single equilibrium state that is drawn from a normal distribution. Accordingly, a VAR model will fit poorly on the skewed or multimodally-distributed time-series emotion data, and correspondingly interpreting its parameters would be misleading. 
+
+(c)  
+However, it is difficult to reason whether the found result by Haselbeck et al. actually reflects the true emotion dynamics or it might be just some sorts of methodological artifacts (e.g., specific measurement design induce multimodality). In order to test this, we could design a study such that participants are asked to report on each item with different measurement scales. For example, a participant reports each item twice, once with VAS (1 - 100 scale) and once with Likert scale (e.g., 1 - 7) at every occasion and in the end we can compare the distribution of items to see if they approximate to each other or not. If the distributions of item based on VAS and Likert-scale are turned out to be similar (i.e., multimodal), then we can be more confident in presuming that the found multimodality and skewness do reflect the true phenomenon.
+
+
+
+## Question 6 (1 point)
+**What do the *day* and *beep* arguments in the packages `graphicalVAR`, `psychonetrics`, and `mlVAR` do? Suppose you have a dataset containing only one observation per day for every weekday (but not weekends) in a year long study. Which argument would you use (and why) to make sure that measures from Mondays are not regressed on measures from Fridays?**
+
+- `dayvar` argument indicates assessment day and when you add this, it ensures that the first measurement of a day is not regressed on the last measurement of the previous day (it removes pairs of observations that cross a night).
+
+- `beepvar` argument indicates the assessment beep per day, and when you add this, it will treat the non-consecutive beeps as missing (removes pairs of observations that are not consecutive).
+
+- In this case, we want to regress measures of each weekdays on measures of the previous days but there are breaks during the weekends. We can then use `dayvar` argument and specify the same number to each week (e.g., Monday - Friday of week 1: `dayvar = 1` and Monday - Friday of week 2: `dayvar = 2`, ...) then the measures from Mondays are not going to be regressed on the measures from Fridays of the previous week.
+
+
+# Practical Questions
+
+\vspace{-3mm}
+
+```{r}
+# load data
+load("clean_network.RData")
+# Variables to investigate:
+vars <- paste0("Q",1:18)
+# Labels:
+varLabs <- c("Relax","Irritable","Worry","Nervous","Future","Anhedonia",
+"Tired","Hungry","Alone","Angry","Social_offline","Social_online",
+"Music","Procrastinate","Outdoors","C19_occupied","C19_worry",
+"Home")
+# Rename columns in data:
+names(Data2)[names(Data2) %in% vars] <- varLabs
+# Remove items:
+Data2 <- Data2 %>% select(-Hungry,-Angry,-Music,-Procrastinate)
+varLabs <- varLabs[!varLabs %in% c("Hungry","Angry","Music","Procrastinate")]
+```
+
+
+# N =1 time series
+
+
+```{r}
+## select a random participant
+student_number <- 12183881
+set.seed(student_number)
+subject <- sample(Data2$id, 1)
+my_data_copy <- my_data <- Data2[which(Data2$id == subject),]
+```
+
+
+I chose 4 variables: *"Irritable", "Worry", "Nervous", "Alone"*.
+```{r}
+chosen_var <- c("Irritable", "Worry", "Nervous", "Alone")
+```
+
+\vspace{-1mm}
+
+## Question 7 (1.5 points)
+**Estimate a *saturated* (no model selection) GVAR model on your sampled subject using the 3 or 4 variables you chose above using `psychonetrics`. Plot the estimated temporal (partial directed correlations) and contemporaneous networks with the same layout (1 point). Which edges are significant (0.5 point)?**  
+
+See Figure \@ref(fig:gvar-psychnet) for the estimated temporal and contemporaneous networks using `psychonetrics` package.
+```{r gvar-psychnet, fig.cap = "Estimated graphical vector auto-regression (GVAR) model", fig.height=4}
+## estimate GVAR model
+res1 <- gvar(my_data, vars = chosen_var, dayvar = "day", beepvar = "beep", estimator="FIML") %>% runmodel
+## temporal network
+temporal1 <- getmatrix(res1, "PDC") # PDC = Partial Directed Correlations
+## contemporaneous network
+contemporaneous1 <- getmatrix(res1, "omega_zeta")
+
+## get average layout
+L1 <- averageLayout(temporal1, contemporaneous1)
+## check maximum edge weights from both networks
+Max1 <- max(temporal1, contemporaneous1)
+## get labels
+labs <- chosen_var
+## plot networks
+layout(t(1:2))
+qgraph(temporal1, layout = L1, theme = "colorblind", directed=TRUE, diag=TRUE,
+       title = "Temporal", vsize = 12, mar = rep(6,4), asize = 5, labels = labs, maximum=0.45)
+qgraph(contemporaneous1, layout = L1, theme = "colorblind", 
+       title = "Contemporaneous", vsize = 12, mar = rep(6,4), asize = 5, labels = labs, maximum=0.45)
+```
+
+Assuming that $\alpha = 0.05$,
+
+- there is no significant edge found in the temporal network as all $p > 0.05$ in the `beta` matrix, as shown below.
+
+- the significant edges in the contemporaneous network are: `Nervous -- Irritable` and  `Alone--Worry` as $p < 0.05$ in the `omega-zeta` matrix.
+
+```{r, echo = FALSE}
+# get parameters
+res1 %>% parameters()
+
+# sig_pars <- res1 %>% parameters() %>%
+#   filter(par >= 19, par <=40) %>%
+#   select(var1, op,var2, est, se, p) %>%
+#   filter(p < 0.05)
+# sig_pars
+```
+
+
+## Question 8 (1 point)
+**Estimate a GVAR model on your sampled subject using the 3 or 4 variables you chose above using the graphicalVAR package (use $\gamma$ = 0), and compare your results to the results of the previous question.**
+
+The resulting GVAR model estimated by `graphicalVAR` (Figure \@ref(fig:gvar-graphicalvar)) is much more sparse compared to the GVAR model estimated by `psychonetrics::gvar` (Figure \@ref(fig:gvar-psychnet)). That is because regularization is applied in `graphicalVAR` by default: the temporal network model is estimated with LASSO regularization and the contemporaneous network model is estimated with GLASSO using BIC (as $\gamma$ = 0). On the contrary, the networks in Figure \@ref(fig:gvar-psychnet) are estimated without any model selection/regularization. Note that the `maximum` argument is set the same across the networks (i.e. `maximum = 0.45`; after checking the maximum edge weight of each network, 0.45 is deemed appropriate) in order to make a reasonable comparison between the network structures. These very sparse network structures estimated with `graphicalVAR` are somewhat expected, given that we found no significant edges in the temporal network, and only a couple of significant edges in the contemporaneous network previously in *Question7*.
+
+```{r gvar-graphicalvar, results='hide', fig.cap = "Estimated graphical vector auto-regression (GVAR) model using graphicavlVAR function", fig.height=4}
+## estimate GVAR model using graphicalVAR
+res2 <- graphicalVAR(my_data, vars = chosen_var, gamma = 0, dayvar = "day", beepvar = "beep")
+Max2 <- max(res2$PCC, res2$PDC) # check the maximum edge weight
+## plot networks
+layout(t(1:2))
+plot(res2, "PDC", layout = L1, main = "Temporal", vsize = 12, mar = rep(6,4), asize = 5,
+       labels = labs, theme="colorblind", maximum = 0.45)
+plot(res2, "PCC", layout = L1, main = "Contemporaneous", vsize = 12, mar = rep(6,4), asize = 5,
+       labels = labs, theme = "colorblind", maximum = 0.45)
+```
+
+
+## Question 9 (1.5 points)
+
+**Test for significant trends ($\alpha$ = 0.05) for your selected variables and detrend these variables if the trends are significant. Then, re-estimate the networks using either `graphicalVAR` or `psychonetrics`. Did your estimated networks change?**
+```{r fullsummaryresults, echo=FALSE, results='hide'}
+## run linear regression on chosen variables
+lms <- chosen_var %>% 
+  paste(., '~ conc') %>% 
+  map(as.formula) %>% 
+  map(lm, data = my_data_copy) 
+names(lms) <- chosen_var
+
+## get the summary results
+lapply(lms, summary)
+```
+
+
+```{r, message=TRUE}
+## Detrending significant linear trends
+for (v in seq_along(chosen_var)){
+  ff <- as.formula(paste0(chosen_var[[v]]," ~ conc"))
+  fit <- lm(ff, data = my_data)
+  # find significant coefficient of "conc"
+  if (anova(fit)$P[1] < 0.05){
+    message(paste("Detrending variable:", chosen_var[v], "as the p-value is", round(anova(fit)$P[1],3)))
+    # detrend the found variables with significant linear trends
+    my_data[[chosen_var[v]]][!is.na(my_data[[chosen_var[[v]]]])] <- residuals(fit)
+  }
+}
+```
+
+As shown above, upon finding the significant effects of time in `Worry` ($p < 0.05$) and `Nervous` ($p < 0.01$)^[***Note.*** See the *Appendix* for the full summary results of linear models.], we detrended the corresponding variables. Re-estimated networks after detrending the variable `Worry` and `Nervous` are shown below in Figure \@ref(fig:detrendplot).  
+
+Overall, the networks estimated after detrending show little differences from the networks estimated on non-detrended data.
+The ones estimated with `psychonetrics` seem more or less the same as the networks estimated on non-detrended data (Figure \@ref(fig:gvar-psychnet)), except for a few changes in the weak edges (faded ones) of the temporal network.
+The networks estimated with `grahicalVAR` are also shown to be almost the same as the ones estimated on non-detrended data (Figure \@ref(fig:gvar-graphicalvar)). One of the few visible changes is that the edge between `Nervous -- Worry` is gone in the contemporaneous network after detrending. The reason that there has been little changes observed after detredning could be possibly that the linear trends found in a couple of variables were not substantially influential on the dynamics of network despite being significant. Again, note that the `maximum` argument is specified to be the same as 0.45 across the networks for the reasonable comparison of network structures (0.45 is chosen after checking the max edge weights of all networks considered).
+
+```{r detrendplot, results='hide', cache=TRUE, fig.cap="Estimated GVAR model after detrending", fig.height=7.5}
+## after detrending, estimate GVAR model using psychonetrics:
+res3 <- gvar(my_data, vars = chosen_var, dayvar = "day", beepvar = "beep", estimator="FIML") %>% runmodel
+# temporal network
+temporal3 <- getmatrix(res3, "PDC") 
+# contemporaneous network
+contemporaneous3 <- getmatrix(res3, "omega_zeta")
+# max(temporal3,contemporaneous3) # check the max edge weight
+
+## after detrending, estimate GVAR model using graphicalVAR:
+res4 <- graphicalVAR(my_data, vars = chosen_var, gamma = 0, dayvar = "day", beepvar = "beep")
+# max(res4$PCC, res4$PDC) # check the max edge weight
+## plot networks after detrending
+layout(t(matrix(1:4, 2, 2)))
+# psychonetrics GVAR networks
+qgraph(temporal3, layout = L1, theme = "colorblind", directed=TRUE, diag=TRUE,
+       vsize = 12, mar = rep(6,4), asize = 5, labels = labs, maximum = 0.45)
+title(main = "Detrended Temporal (psychonetrics)", font.main = 1, cex.main=1)
+qgraph(contemporaneous3, layout = L1, theme = "colorblind", vsize = 12, 
+       mar = rep(6,4), asize = 5, labels = labs, maximum = 0.45)
+title(main = "Detrended Contemporaneous (psychonetrics)", font.main = 1, cex.main=1)
+# graphicalVAR networks
+plot(res4, "PDC", layout = L1, main = "Temporal", vsize = 12, mar = rep(6,4), asize = 5,
+       labels = labs, theme="colorblind", titles = FALSE, maximum = 0.45)
+title(main = "Detrended Temporal (graphicalVAR)", font.main = 1, cex.main=1)
+plot(res4, "PCC", layout = L1, main = "Contemporaneous", vsize = 12, mar = rep(6,4), asize = 5,
+       labels = labs, theme = "colorblind", titles=FALSE, maximum = 0.45)
+title(main = "Detrended Contemporaneous (graphicalVAR)", font.main = 1, cex.main=1)
+```
+
+\newpage
+
+## Question 10 (1 point)
+
+**For question 8 you estimated a graphical VAR network containing 3 or 4 variables for a sampled subject using the `graphicalVAR` package. Repeat this process for another subject. Now that you have estimated two graphical VAR models on non-detrended data, plot the resulting networks and inspect the similarities and differences between these estimated graphical VAR networks. Can you conclude there is heterogeneity between these two people? Why (not)?**
+
+Just at a glance, it seems two people are different as the estimated network structures look different (see Figure \@ref(fig:compareGVAR)). Two subjects show different connections in the network: subject id of 66 has one edge `Alone -> Worry` in the temporal network, on the other hand subject id of 33 has one additional edge `Alone -> Irritable` in the temporal network. They also show differences in contemporaneous networks (e.g., subject id of 66 has four connections in total, whereas subject id of 33 has two connections with different weights from subject id of 66). Overall, there aren't really much of similarities observed other than the common presence of couple of edges. Note that the `layout` and `maximum` absolute value of edge weights are set to be the same across the estimated network models.
+
+However, despite of these clear differences observed in visual comparison of network structures, we cannot really conclude that there is heterogeneity based on this, because we cannot ensure that these estimated GVAR models are reliable. It could be that they are just random noises, then we would compare a set of random noises to another set of random noises. According to @hoekstra_heterogeneity_2022, even when the generating structure is the same, it is likely that we would find different network structures. Hence, it is not advisable to interpret the differences between individual network models as an evidence for heterogeneity, especially when the networks are sparse as in this case.
+
+```{r compareGVAR, results='hide', cache=TRUE, fig.cap="Comparison of GVAR model", fig.height=8}
+## Another seed: select another random subject
+set.seed(13294889)
+subject2 <- sample(Data2$id, 1)
+my_data2 <- Data2[which(Data2$id == subject2),]
+
+## Estimate GVAR model for another subject
+res5 <- graphicalVAR(my_data2, vars = chosen_var, gamma = 0, dayvar = "day", beepvar = "beep")
+
+## plot networks and compare
+layout(t(matrix(1:4, 2, 2)))
+# extract the max value and specify it the same across the networks
+Max <- max(res2$PCC, res2$PDC, res5$PCC, res5$PDC)
+# subject from Q8 (id = 68)
+plot(res2, "PDC", layout = L1, vsize = 12, mar = rep(6,4), asize = 5,
+       labels = labs, theme="colorblind", titles=FALSE, maximum=Max)
+title(main = "Temporal (subject id=68)", cex.main = 1, font.main = 1)
+
+plot(res2, "PCC", layout = L1, vsize = 12, mar = rep(6,4), asize = 5,
+       labels = labs, theme = "colorblind", titles=FALSE, maximum=Max)
+title(main = "Contemporaneous (subject id=68)", cex.main = 1, font.main = 1)
+
+# another subject (id = 33)
+plot(res5, "PDC", layout = L1, vsize = 12, mar = rep(6,4), asize = 5,
+       labels = labs, theme="colorblind", titles=FALSE, maximum=Max)
+title(main = "Temporal (subject id=33)", cex.main = 1, font.main = 1)
+
+plot(res5, "PCC", layout = L1, vsize = 12, mar = rep(6,4), asize = 5,
+       labels = labs, theme = "colorblind", titles=FALSE, maximum=Max)
+title("Contemporaneous (subject id=33)", cex.main = 1, font.main = 1)
+```
+
+\newpage
+
+# N > 1 time-series
+
+## Question 11 (1 point)
+**Look at the help file for the `mlVAR` function and estimate a multilevel GVAR model on the entire dataset on 4 to 6 variables of your choice.**
+
+I chose 5 variables: "`Irritable`", "`Worry`", "`Nervous`", "`Alone`", "`C19_worry`". See below the code for estimating the `mlVAR` model.
+```{r cache=TRUE, results='hide'}
+## choose 5 variables
+chosen_var2 <- c("Irritable", "Worry", "Nervous", "Alone", "C19_worry")
+## estimate mlGVAR model
+mlVAR_res <- mlVAR(Data2, vars = chosen_var2, idvar = "id" , beepvar = "beep", 
+                   dayvar = "day", contemporaneous = "correlated", temporal = "correlated")
+```
+
+
+## Question 12 (1 point)
+
+**Look at the mlVAR plot method help file, and plot the estimated fixed-effect temporal, contemporaneous and between-subjects networks. Plot all networks with the same layout (circle layout or average layout), and hide (threshold) edges that are not significant at $\alpha$ = 0.05. For the contemporaneous and between-subjects networks, use an "and"-rule to minimize type-1 error rate in showing edges.**  
+
+See Figure \@ref(fig:mlvarplot) for the estimated fixed effect temporal, contemporaneous, and between-subjects network.
+
+```{r mlvarplot, cache=TRUE, fig.cap = "Estimated fixed effects of network structures"}
+# Get networks:
+temp <- getNet(mlVAR_res, "temporal", nonsig = "hide")
+cont <- getNet(mlVAR_res, "contemporaneous", nonsig = "hide", rule = "and")
+bet  <- getNet(mlVAR_res, "between", nonsig = "hide", rule = "and")
+# Get average layout
+L <- averageLayout(cont,bet,temp)
+
+## Plot networks
+par(mfrow=c(1,3))
+plot(mlVAR_res, "temporal", title="(a) Temporal (Lag-1)", layout = L, nonsig = "hide", 
+     alpha = 0.05, theme='colorblind', vsize = 16, asize = 5, 
+     mar = rep(7,4), title.cex = 1.3)
+
+plot(mlVAR_res, "contemporaneous", title="(b) Contemporaneous", layout = L, nonsig = "hide", 
+     alpha = 0.05, rule = "and", theme='colorblind', vsize = 16,  asize = 5, 
+     mar = rep(7,4), title.cex = 1.3)
+
+plot(mlVAR_res, "between", title="(c) Between-subjects", layout = L, nonsig = "hide", 
+     alpha = 0.05, rule = "and", theme='colorblind', vsize = 16, asize = 5, 
+     mar = rep(7,4), title.cex = 1.3)
+```
+
+
+\newpage 
+## Question 13 (2 points)
+
+**Plot the estimated individual differences for both the temporal and the contemporaneous network. Explain what the edges in these networks represent. Inspect the plotted networks, what conclusion can you draw about heterogeneity within this sample based on these network structures?**
+
+Figure \@ref(fig:inddif) shows the estimated networks of the individual differences, where the edges represent the standard deviation of random effects in the temporal and in the contemporaneous network, respectively. Hence, it indicates how much variance there is in the estimated relations in our sample.  
+
+In the temporal network, the `minimum` argument is set to 0.1, meaning that only the standard deviation of temporal random effects above 0.1 are shown with a non-transparent arrow, following the advice of @bringmann_network_2013. From Figure \@ref(fig:inddif) (a), we can see that the largest individual differences are found in the auto-correlations, given that the self-loops of `Alone` and `C19-worry` are the most pronounced. It implies that there is a high individual variability over those items such that for some individuals, once they feel alone they tend to feel lonely for long time, but for the other individuals, it is rather momentary. The same interpretation goes for the auto-correlation in `C19_worry`. Among the cross-lagged relations, `Nervous -> Irritable` turns out to have relatively larger individual differences, meaning that the extent to which `Nervous` at time $t$ affects `Irritable` at time $t+1$ differs quite some across the individuals in our sample. When looking at the contemporaneous network in Figure \@ref(fig:inddif) (b), the largest individual differences are again found in the relationship between `Nervous` and `Irritable`, followed by the relationship between `Nervous` and `Worry`. 
+
+All in all, we can conclude that there is some amount of individual heterogeneity observed in our data. In general, relatively higher individual differences are shown to present in the auto-correlations (e.g., `Alone`, `C19_worry`) compared to cross-lagged relations. Additionally, the relation between `Nervous` and `Irritable` seems to vary relatively a lot across individuals in this sample as compared to the other relations, considering that it is pronounced in both temporal and contemporaneous networks.
+
+```{r inddif, fig.cap="Individual differences networks", fig.height=4}
+layout(t(1:2))
+## temporal: random effects SD
+plot(mlVAR_res , type = "temporal", SD = TRUE, title = "Individual differences - Temporal", 
+     layout = L, labels = chosen_var2, theme='colorblind', vsize = 12, asize = 4, mar = rep(7,4), 
+     minimum = 0.1)
+
+## contemporaneous: random effects SD
+plot(mlVAR_res , type = "contemporaneous", SD = TRUE, title ="Individual differences - Contemporaneous",
+     layout = L, labels = chosen_var2, theme='colorblind', vsize = 12, asize = 4, mar = rep(7,4))
+```
+
+\vspace{-4mm}
+
+
+# Essay Question
+
+\vspace{-4mm}
+
+## Question 14 (2 points)
+**Inspect these network measures and choose one that would be interesting to compute on one of the estimated networks from any of the previous questions. Report your chosen measure and what it represents for the network you have chosen, explain your choice, and what research question it could answer in the form of a short essay (max 250 words).** 
+
+After inspecting various measures from [Brain Connectivity Toolbox](https://sites.google.com/site/bctnet/home), I decided to look at *in-strength & out-strength* for the fixed effect *temporal network* from Figure \@ref(fig:mlvarplot) (a).
+The overall strength is the sum of absolute edge weights for a given node [@costantini2015state]. For the temporal network, which includes directionality of edges, strength can be sub-divided into *in-strength* and *out-strength*. In-strength is the sum of inward edge weights and out-strength is the sum of outward edge weights. In the temporal network, in-strength represents the *relative susceptibility* (i.e., the extent to which a node is influenced by the previous state of the other nodes) and out-strength represents the *relative predictability* (i.e., the extent to which a node has an influence on the following state of the other nodes) [@panayiotou_humphrey_2022]. 
+
+The motivation to look at in-/out-strength for the temporal network is that in temporal networks, it is interesting to see whether a node is a strong affector (activate other nodes) or an effector (activated by other nodes). Given that a temporal network contains information not only about the direction of influence but also the strength of influence, in-/out-strength is appropriate measure as it can capture both aspects. 
+
+Using in-/out-strength we can answer research questions such as: *what are the nodes that have highest predictive power* or *what are the nodes with highest susceptibility?* And based on the result, we may be able to draw an inference on the dynamics of the system by figuring out, for example, which node takes a main role when it comes to activating the system.
+
+Figure \@ref(fig:centrality) shows the in-strength and out-strength of the temporal network from Figure \@ref(fig:mlvarplot) (a). We can see that `Alone` and `C19_worry` have relatively high predictive power as they have stronger influence on the following states of other nodes, while `Nervous` and `Worry` have high susceptibility as they are affected strongly by the previous state of the other nodes. Based on that, we can assume that the central dynamic in this network consists of `Alone` and `C19Pworry` mainly activating `Nervous` and `Worry` variables. Lastly, `Irritable` is shown to be low on both out-strength and in-strength, which implies that it probably does not play a crucial role in the corresponding temporal network dynamic. Note that the stability of centrality measures is not tested. Hence, any inferences based on in-/out-strength centrality values should be drawn with caution.
+
+```{r centrality, fig.cap="In-/Out-strengh centrality plot", out.width="60%"}
+## compute in-/out-strength
+inoutStrength <- temp %>% centrality_auto() %>% 
+  .$node.centrality %>% 
+  select(InStrength, OutStrength) 
+## plot in-/out-strength
+p1 <- inoutStrength %>% 
+  ggplot(aes(y = OutStrength, x=reorder(rownames(.), OutStrength))) +
+  geom_line(aes(group=1)) + geom_point() +  coord_flip() +
+  labs(x="", y = "", title = "Out-Strength") + ylim(0.1, 0.26)+ theme_bw()
+p2 <- inoutStrength %>% 
+  ggplot(aes(y = InStrength, x=reorder(rownames(.), OutStrength))) +
+  geom_line(aes(group=1)) + geom_point() + coord_flip()+
+  labs(x="", y = "", title = "In-Strength") + ylim(0.05, 0.26)+ theme_bw()
+ggarrange(p1, p2)  
+```
+
+
+\newpage
+
+# Appendix
+
+## Summary results of linear models (Question 9)
+
+```{r ref.label="fullsummaryresults"}
+```
+
+<!-- ## Stability of centrality measure -->
+<!-- ```{r} -->
+<!-- library(bootnet) -->
+<!-- # Estimate model: -->
+<!-- gvar <- estimateNetwork( -->
+<!--   Data2, default = "graphicalVAR", vars = chosen_var2, -->
+<!--   tuning = 0, idvar = "id", dayvar = "day", beepvar = "beep", nLambda = 8 -->
+<!-- ) -->
+
+<!-- Layout <- qgraph::averageLayout(gvar$graph$temporal,  -->
+<!--                                 gvar$graph$contemporaneous) -->
+<!-- layout(t(1:2)) -->
+<!-- plot(gvar, graph = "temporal", layout = Layout,  -->
+<!--      title = "Temporal") -->
+<!-- plot(gvar, graph = "contemporaneous", layout = Layout,  -->
+<!--      title = "Contemporaneous") -->
+<!-- ``` -->
+
+
+<!-- Individual differences manually figured out -->
+<!-- ```{r} -->
+<!-- # ## checked with summary result -->
+<!-- # summary(mlVAR_res) -->
+
+<!-- # ## temporal: random effects SD -->
+<!-- # temp_ran_sd <- mlVAR_res[["results"]][["Beta"]][["SD"]] # mlVAR_res$results$Beta$SD -->
+<!-- # tem_inddif <- cbind(rep(1:5,each=5), rep(1:5,5), weight=as.vector(temp_ran_sd)) -->
+<!-- # qgraph(tem_inddif, layout = L, labels = chosen_var2, theme='colorblind', vsize = 12, asize = 4, mar = rep(7,4), title = "(a) Temporal", minimum = 0.1, details=T) # we set the minimum 0.07 to make the network a bit sparse -->
+<!-- #  -->
+<!-- # ## contemporaneous: random effects SD -->
+<!-- # contemp_ran_sd <- mlVAR_res[["results"]][["Theta"]][["pcor"]][["SD"]] -->
+<!-- # qgraph(contemp_ran_sd, layout = L, labels = chosen_var2, theme='colorblind', vsize = 12, asize = 4, mar = rep(7,4), title = "(b) Contemporaneous", details=T) -->
+<!-- ``` -->
+
+
+\newpage
+# References
+<div id="refs"></div>
+

@@ -1,16 +1,19 @@
 
 ## =============================================================================
 ## Description
-
+#
 # This script contains models that are used in the simulation study.
 # There are in total 6 models considered (4nodes-sparse, 4nodes-dense, 5nodes-sparse,
 # 5nodes-dense, 6nodes-sparse, 6nodes-dense).
 # We estimated GGM and PAG (using CCD) for each model, as shown below.
-# They are commented out but you can uncomment and run them to see the resulting models.
+# They are commented out but you can un-comment them and
+# run the code to see the resulting models.
 ## =============================================================================
 
 
-
+## ========================
+## Preparation
+## ========================
 ## load necessary packages
 library(qgraph)
 library(pcalg)
@@ -27,7 +30,7 @@ source("code/R/eval_metric_fnc.R")
 
 
 ## ========================
-## 4 nodes - sparse
+## Model 1) 4 nodes - sparse
 ## ========================
 
 # specify B matrix
@@ -59,8 +62,18 @@ layout4 = matrix(c(-1,1,
 # ## run CCD algorithm
 # ccd_4p <- ccdKP(df=data4p, dataType = "continuous", alpha = 0.05)
 
+## Estimate PAG
+# pag4p <- plotPAG(ccd_4p, mat4p)
+
+## Compute equivalence class of all DCGs given the PAG
+# (this takes relatively a long time, so we save the object)
+# equiv4p <- semiequiv_dcg(ccd_4p, mat4p)
+# save(equiv4p, file="data/equiv4p.RData")
+# load("data/equiv4p.RData")
+
+
 ## ========================
-## 4 nodes - dense
+## Model 2) 4 nodes - dense
 ## ========================
 # specify B matrix
 p = 4
@@ -86,9 +99,18 @@ colnames(B4_high) <- c("X1", "X2", "X3", "X4")
 # ccd_4p_high <- ccdKP(df=data4p_high, dataType = "continuous", alpha = 0.05)
 # mat4p_high <- CreateAdjMat(ccd_4p_high, 4)
 
+# Estimate PAG
+# pag4p <- plotPAG(ccd_4p_high, mat4p_high)
+
+## Compute equivalence class of all DCGs given the PAG
+# (this takes relatively a long time, so we save the object)
+# equiv4p_high <- semiequiv_dcg(ccd_4p_high, mat4p_high)
+# save(equiv4p_high, file="data/equiv4p_high.RData")
+# load("data/equiv4p_high.RData")
+
 
 ## ========================
-## 5 nodes - sparse
+## Model 3) 5 nodes - sparse
 ## ========================
 # specify B matrix
 p = 5
@@ -121,9 +143,18 @@ layout5 = matrix(c(0,1,
 # ccd_5p <- ccdKP(df=data5p, dataType = "continuous", alpha = 0.05)
 # mat5p <- CreateAdjMat(ccd_5p, 5)
 
+# Estimate PAG
+# pag5p <- plotPAG(ccd_5p, mat5p)
+
+## Compute equivalence class of all DCGs given the PAG
+# (this takes relatively a long time, so we save the object)
+# equiv5p <- semiequiv_dcg(ccd_5p, mat5p)
+# save(equiv5p, file="data/equiv5p.RData")
+# load("data/equiv5p.RData")
+
 
 ## ========================
-## 5 nodes - dense
+## Model 4) 5 nodes - dense
 ## ========================
 # specify B matrix
 p = 5
@@ -157,8 +188,17 @@ layout5 = matrix(c(0,1,
 # ccd_5p_high <- ccdKP(df=data5p_high, dataType = "continuous", alpha = 0.05)
 # mat5p_high <- CreateAdjMat(ccd_5p_high, 5)
 
+## Estimate PAG
+# pag5p_high <- plotPAG(ccd_5p_high, mat5p_high)
+
+## Compute equivalence class of all DCGs given the PAG
+# (this takes relatively a long time, so we save the object)
+# equiv5p_high <- semiequiv_dcg(ccd_5p_high, mat5p_high)
+# save(equiv5p_high, file="data/equiv5p_high.RData")
+# load("data/equiv5p_high.RData")
+
 ## ========================
-## 6 nodes - sparse
+## Model 5) 6 nodes - sparse
 ## ========================
 # specify B matrix
 p = 6
@@ -194,8 +234,17 @@ layout6 = matrix(c(1, 2,
 # ccd_6p <- ccdKP(df=data6p, dataType = "continuous", alpha = 0.05)
 # mat6p <- CreateAdjMat(ccd_6p, 6)
 
+## Estimate PAG
+# pag6p <- plotPAG(ccd_6p, mat6p)
+
+## Compute equivalence class of all DCGs given the PAG
+# (this takes relatively a long time, so we save the object)
+# equiv6p <- semiequiv_dcg(ccd_6p, mat6p)
+# save(equiv6p, file="data/equiv6p.RData")
+# load("data/equiv6p.RData")
+
 ## ========================
-## 6 nodes - dense
+## Model 6) 6 nodes - dense
 ## ========================
 # specify B matrix
 p = 6
@@ -223,3 +272,12 @@ colnames(B6_high) <- c("X1", "X2", "X3", "X4", "X5", "X6")
 # ## run CCD algorithm
 # ccd_6p_high <- ccdKP(df=data6p_high, dataType = "continuous", alpha = 0.05)
 # mat6p_high <- CreateAdjMat(ccd_6p_high, 6)
+
+## Estimate PAG
+# pag6p_high <- plotPAG(ccd_6p_high, mat6p_high)
+
+## Compute equivalence class of all DCGs given the PAG
+# (this takes relatively a long time, so we save the object)
+# equiv6p_high <- semiequiv_dcg(ccd_6p_high, mat6p_high)
+# save(equiv6p_high, file="data/equiv6p_high.RData")
+# load("data/equiv6p_high.RData")
