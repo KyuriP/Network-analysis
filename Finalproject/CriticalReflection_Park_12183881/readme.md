@@ -1,4 +1,4 @@
-.
+```
 ├── CriticalReflection_Park_12183881.Rmd
 ├── CriticalReflection_Park_12183881.pdf
 ├── Individual_report.Rproj
@@ -34,5 +34,4 @@
 │   └── logouva.png
 ├── readme.md
 └── references.bib
-
-4 directories, 31 files
+```
