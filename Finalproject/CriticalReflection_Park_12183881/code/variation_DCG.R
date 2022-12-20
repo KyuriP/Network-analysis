@@ -19,7 +19,7 @@ library(pcalg)
 library(dplyr)
 library(ggplot2)
 
-## source all the functions
+## source all the necessary functions
 source("code/R/variation_fnc.R")
 source("code/simulation.R")
 

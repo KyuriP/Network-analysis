@@ -23,7 +23,7 @@ library(pcalg)
 library(ggplot2)
 library(dplyr)
 
-## source necessary functions
+## source all the necessary functions
 source("code/R/CCD_fnc.R")
 source("code/R/plot_fnc.R")
 

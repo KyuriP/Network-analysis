@@ -4,7 +4,7 @@
 ## The main function is `ccdKP`, which runs the CCD algorithm,
 ## and it is dependent on the other four functions.
 ##
-## Purpose: It runs CCD algorithm.
+## Purpose: To run the CCD algorithm.
 ##
 ## Note: This is a wrapper function for ccd algorithm in the Tetrad software.
 ## Please check Tetrad for more detailed information
