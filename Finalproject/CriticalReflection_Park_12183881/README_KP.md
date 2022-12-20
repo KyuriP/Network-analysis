@@ -9,6 +9,7 @@
 ===============================================================================
 ## CONTENTS
 ===============================================================================
+
 The folder structure is as follows:
 
 ```
@@ -76,5 +77,6 @@ The folder structure is as follows:
 3. Check the `code` folder for any code used to perform the analysis presented in the report.
 
 In case of any questions, please contact Kyuri Park (kyuri.park@student.uva.nl).
+
 ===============================================================================
 
