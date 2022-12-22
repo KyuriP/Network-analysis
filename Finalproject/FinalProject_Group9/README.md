@@ -1,12 +1,15 @@
 ===============================================================================
-## README FILE FOR THE FINAL PROJECT
-## COURSE: NETWORK ANALYSIS 2022
-## AUTHOR: KYURI PARK & SHANNON DICKSON
-## THIS README PROVIDES THE DESCRIPTION ON THE STRUCTURE OF "FinalProject_Group9.zip" FILE.
+
+### README FILE FOR THE FINAL PROJECT
+### COURSE: NETWORK ANALYSIS 2022
+### AUTHOR: KYURI PARK & SHANNON DICKSON
+
+### THIS README PROVIDES THE DESCRIPTION ON THE STRUCTURE OF "FinalProject_Group9.zip" FILE.
+
 ===============================================================================
 ## INTRODUCTION
+
 Use this as a guide for understanding the folder structure within our project.
-===============================================================================
 
 ===============================================================================
 ## CONTENTS
