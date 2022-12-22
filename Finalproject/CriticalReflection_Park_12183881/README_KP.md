@@ -1,9 +1,11 @@
 ===============================================================================
-## README FILE FOR THE FINAL INDIVIDUAL REPORT
-## COURSE: NETWORK ANALYSIS 2022
-## AUTHOR: KYURI PARK
-## STUDENT ID: 12183881
-## THIS README PROVIDES THE DESCRIPTION ON THE STRUCTURE OF "CriticalReflection_Park_12183881.zip" FILE.
+
+### README FILE FOR THE FINAL INDIVIDUAL REPORT
+### COURSE: NETWORK ANALYSIS 2022
+### AUTHOR: KYURI PARK
+### STUDENT ID: 12183881
+### THIS README PROVIDES THE DESCRIPTION ON THE STRUCTURE OF "CriticalReflection_Park_12183881.zip" FILE.
+
 ===============================================================================
 
 ===============================================================================
