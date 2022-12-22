@@ -1,0 +1,11 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/985537/c0014dc623e94b01a6d99e44843016cb
+bundleId: https://api.rpubs.com/api/v1/document/985537/c0014dc623e94b01a6d99e44843016cb
+url: http://rpubs.com/KyuriP/985537
+when: 1671623820.92026
+lastSyncTime: 1671623820.92027
