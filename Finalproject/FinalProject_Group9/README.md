@@ -1,19 +1,19 @@
-===============================================================================
+---
 
-### README FILE FOR THE FINAL PROJECT
-### COURSE: NETWORK ANALYSIS 2022
-### AUTHOR: KYURI PARK & SHANNON DICKSON
+#### README FILE FOR THE FINAL PROJECT
+#### COURSE: NETWORK ANALYSIS 2022
+#### AUTHOR: KYURI PARK & SHANNON DICKSON
 
-### THIS README PROVIDES THE DESCRIPTION ON THE STRUCTURE OF "FinalProject_Group9.zip" FILE.
+#### THIS README PROVIDES THE DESCRIPTION ON THE STRUCTURE OF "FinalProject_Group9.zip" FILE.
 
-===============================================================================
+---
 ## INTRODUCTION
 
 Use this as a guide for understanding the folder structure within our project.
 
-===============================================================================
+
 ## CONTENTS
-===============================================================================
+
 
 ```
 ├── NA_finalproject.Rproj
@@ -54,17 +54,17 @@ Use this as a guide for understanding the folder structure within our project.
 ```
 
 
-===============================================================================
+
 ## DATA
-===============================================================================
+
 
 In the `data` folder you can find the equivalent sets of directed cyclic graphs (DCG) for each of the simulation conditions saved as `Rdata` format. 
 This is done in order to save the potentially long running time of the provided code (as computing the equivalent sets of DCG using `semiequiv_dcg` function takes a while).
 
 
-===============================================================================
+
 ## CODE
-===============================================================================
+
 
 In the `R` folder you can find the following:
 
@@ -73,9 +73,9 @@ In the `R` folder you can find the following:
  - Remaining `.R` files are supporting functions required to run `simulation_study.R`.
 
 
-===============================================================================
+
 ## SUPPLEMENTARY MATERIALS
-===============================================================================
+
 
 In the `supplementary_materials` folder, you can find a complete overview of our study. 
 
@@ -84,19 +84,18 @@ In the `supplementary_materials` folder, you can find a complete overview of our
 - `supplementary.Rmd` is the markdown document that produces the `.html`.
 
 
-===============================================================================
+
 ## POSTER
-===============================================================================
+
 
 The file `poster_group9.pdf` is the poster for our project. 
 
 
-===============================================================================
-## RECOMMENDATION
-===============================================================================
 
+## RECOMMENDATION
 We recommend first checking our poster along with the supplementary material.  
 For those who are interested in reproducing the analyses, check `simulation_study.R` and run the code step by step as described. Make sure that the working directory is correctly set (you can easily open the `.Rproj` and access all the files, which automatically ensures to have the correct working directory).
 
+---
 In case of any questions, please contact us (kyuri.park@student.uva.nl).
 
