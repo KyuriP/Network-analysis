@@ -14,3 +14,11 @@ Topics cover both theoretical and practical aspects of network analysis includin
  + Network estimation from time series data
  + Simulating network dynamics and interventions
 
+## Contents
+
+| Files/Folders          | Description   |
+| -----------------      | ------------- |
+|Lectures                |lecture slides (`.pdf` files)|
+|Assignment              |Three assignment folders; each contains a `.Rmd` file rendering a `.pdf` file|
+|FinalProject            |A group project and an individual report; check the README of each project for further information  |
+|Textbook                |Network Analysis book used for this course|
